@@ -5,11 +5,11 @@
   "private": true,
   "main": "dist/server.js",
   "scripts": {
-    "dev": "tsx watch src/server.ts",
-    "start": "tsx src/server.ts",
-    "build": "tsc",
-    "check": "tsc --noEmit"
-  },
+  "dev": "tsx watch src/server.ts",
+  "build": "tsc",
+  "start": "node dist/server.js",
+  "check": "tsc --noEmit"
+},
   "keywords": [
     "nebula",
     "nebulaos",
