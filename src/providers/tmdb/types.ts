@@ -28,3 +28,14 @@ export interface TMDBTrendingResponse {
   total_pages: number;
   total_results: number;
 }
+
+
+export interface TMDBGenre {
+  id: number;
+  name: string;
+}
+
+export interface TMDBMovieDetails extends TMDBMovie {
+  runtime: number;
+  genres: TMDBGenre[];
+}

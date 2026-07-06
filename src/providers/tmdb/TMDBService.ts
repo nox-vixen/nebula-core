@@ -69,6 +69,10 @@ class TMDBService {
     );
   }
 
+  async getMovieDetails(id: string) {
+    return this.request(`/movie/${id}`);
+  }
+
   async getDocumentaryMovies(): Promise<TMDBTrendingResponse> {
     return this.request("/discover/movie?with_genres=99");
   }
