@@ -18,7 +18,7 @@ export function mapTMDBMovieToSearchResult(
 ): NebulaSearchResult {
   return {
     id: String(movie.id),
-    providerId: "tmdb",
+    provider: "tmdb",
     sources: {
       metadata: "tmdb",
       artwork: "tmdb",
