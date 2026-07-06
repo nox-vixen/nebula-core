@@ -63,6 +63,12 @@ class TMDBService {
     return this.request("/discover/movie?with_genres=10749");
   }
 
+  async searchMovies(query: string, page = 1): Promise<TMDBTrendingResponse> {
+    return this.request(
+      `/search/movie?query=${encodeURIComponent(query)}&page=${page}`
+    );
+  }
+
   async getDocumentaryMovies(): Promise<TMDBTrendingResponse> {
     return this.request("/discover/movie?with_genres=99");
   }

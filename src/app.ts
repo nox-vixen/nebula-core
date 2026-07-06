@@ -2,12 +2,14 @@ import "./providers";
 import express from "express";
 import cors from "cors";
 import homeRoute from "./routes/home";
+import searchRoute from "./routes/search";
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 app.use("/api/home", homeRoute);
+app.use("/api/search", searchRoute);
 
 app.get("/api/health", (_req, res) => {
   res.json({
