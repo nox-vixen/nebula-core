@@ -29,7 +29,7 @@ export class CacheManager {
     const l1 = await this.primary.get<T>(key);
 
     if (l1 && new Date(l1.expiresAt) > now) {
-      return l1.value;
+      return { ...(l1.value as any), cached: true } as T;
     }
 
     if (this.secondary) {
@@ -37,7 +37,7 @@ export class CacheManager {
 
       if (l2 && new Date(l2.expiresAt) > now) {
         await this.primary.set(l2);
-        return l2.value;
+        return { ...(l2.value as any), cached: true } as T;
       }
     }
 
