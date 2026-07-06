@@ -1,3 +1,4 @@
+import movieRoute from "./routes/movie";
 import "./providers";
 import express from "express";
 import cors from "cors";
@@ -10,6 +11,7 @@ app.use(cors());
 app.use(express.json());
 app.use("/api/home", homeRoute);
 app.use("/api/search", searchRoute);
+app.use("/api/movie", movieRoute);
 
 app.get("/api/health", (_req, res) => {
   res.json({
