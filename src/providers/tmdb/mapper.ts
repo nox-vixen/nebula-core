@@ -18,7 +18,7 @@ export function mapTMDBMovieToSearchResult(
 ): NebulaSearchResult {
   return {
     id: String(movie.id),
-    provider: "tmdb",
+    providerId: "tmdb",
     type: "movie",
     title: movie.title,
     overview: movie.overview,
@@ -41,7 +41,7 @@ export function mapTMDBMovieDetailsToMovie(
 ): NebulaMovie {
   return {
     id: String(movie.id),
-    provider: "tmdb",
+    providerId: "tmdb",
     title: movie.title,
     originalTitle: movie.original_title,
     overview: movie.overview,
