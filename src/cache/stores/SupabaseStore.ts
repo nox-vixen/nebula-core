@@ -47,6 +47,7 @@ export class SupabaseStore implements CacheStore {
   }
 
   async set<T>(entry: CacheEntry<T>): Promise<void> {
+    console.log("[SupabaseStore:set] Writing cache:", entry.key);
     try {
       const { error } = await supabase
         .from("nebula_cache")
