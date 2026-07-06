@@ -83,8 +83,15 @@ export const tmdbProvider: NebulaProvider = {
     throw new Error("Not implemented");
   },
 
-  async getWatchData(_id: string): Promise<NebulaStream> {
-    throw new Error("Not implemented");
+  async getWatchData(id: string): Promise<NebulaStream> {
+    return {
+      id,
+      provider: "tmdb",
+      url: "https://example.com/not-implemented",
+      quality: "1080p",
+      format: "mp4"
+    };
+  },
   },
 
   async getSubtitles(_id: string): Promise<NebulaSubtitle[]> {
