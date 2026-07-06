@@ -19,11 +19,6 @@ export function mapTMDBMovieToSearchResult(
   return {
     id: String(movie.id),
     provider: "tmdb",
-    sources: {
-      metadata: "tmdb",
-      artwork: "tmdb",
-      ratings: "tmdb"
-    },
     type: "movie",
     title: movie.title,
     overview: movie.overview,
