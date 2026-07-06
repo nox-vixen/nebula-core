@@ -92,7 +92,6 @@ export const tmdbProvider: NebulaProvider = {
       format: "mp4"
     };
   },
-  },
 
   async getSubtitles(_id: string): Promise<NebulaSubtitle[]> {
     return [];
