@@ -7,9 +7,11 @@
  * ==========================================================
  */
 
-import { env } from "../../config/env";
 import { NebulaSearchResult } from "../../models";
 import { TMDBMovie } from "./types";
+
+const POSTER_BASE = "https://image.tmdb.org/t/p/w500";
+const BACKDROP_BASE = "https://image.tmdb.org/t/p/w780";
 
 export function mapTMDBMovieToSearchResult(
   movie: TMDBMovie
@@ -25,10 +27,10 @@ export function mapTMDBMovieToSearchResult(
       ? Number(movie.release_date.substring(0, 4))
       : undefined,
     poster: movie.poster_path
-      ? `${env.TMDB_IMAGE_URL}${movie.poster_path}`
+      ? `${POSTER_BASE}${movie.poster_path}`
       : undefined,
     backdrop: movie.backdrop_path
-      ? `${env.TMDB_IMAGE_URL}${movie.backdrop_path}`
-      : undefined
+      ? `${BACKDROP_BASE}${movie.backdrop_path}`
+      : undefined,
   };
 }
