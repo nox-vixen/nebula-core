@@ -19,6 +19,11 @@ export function mapTMDBMovieToSearchResult(
   return {
     id: String(movie.id),
     providerId: "tmdb",
+    sources: {
+      metadata: "tmdb",
+      artwork: "tmdb",
+      ratings: "tmdb"
+    },
     type: "movie",
     title: movie.title,
     overview: movie.overview,
@@ -42,6 +47,11 @@ export function mapTMDBMovieDetailsToMovie(
   return {
     id: String(movie.id),
     providerId: "tmdb",
+    sources: {
+      metadata: "tmdb",
+      artwork: "tmdb",
+      ratings: "tmdb"
+    },
     title: movie.title,
     originalTitle: movie.original_title,
     overview: movie.overview,
