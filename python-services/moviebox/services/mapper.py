@@ -25,6 +25,7 @@ def map_search_results(content):
         "results": [
             {
                 "id": item.subjectId,
+                "detailPath": item.detailPath,
                 "title": item.title,
                 "type": _subject_type(item.subjectType),
                 "year": item.releaseDate.year if item.releaseDate else None,
