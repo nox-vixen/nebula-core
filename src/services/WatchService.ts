@@ -18,8 +18,14 @@ export class WatchService {
   }
 
 
-  async getSubtitles(id: string) {
-    return movieBoxProvider.getSubtitles(id);
+  async getSubtitles(
+    id: string,
+    resourceId: string
+  ) {
+    return movieBoxProvider.getSubtitles(
+      id,
+      resourceId
+    );
   }
 }
 

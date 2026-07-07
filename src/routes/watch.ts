@@ -17,9 +17,12 @@ router.get("/:id", async (req, res) => {
 });
 
 
-router.get("/:id/subtitles", async (req, res) => {
+router.get("/:id/subtitles/:resourceId", async (req, res) => {
   try {
-    const subtitles = await watchService.getSubtitles(req.params.id);
+    const subtitles = await watchService.getSubtitles(
+      req.params.id,
+      req.params.resourceId
+    );
 
     res.json({
       success: true,

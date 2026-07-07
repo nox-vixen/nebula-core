@@ -24,7 +24,8 @@ import { movieBoxClient } from "./MovieBoxClient";
 import {
   mapMovieBoxSearchResult,
   mapMovieBoxMovie,
-  mapMovieBoxSeries
+  mapMovieBoxSeries,
+  mapMovieBoxSubtitle
 } from "./MovieBoxMapper";
 
 class MovieBoxProvider implements NebulaProvider {
@@ -104,8 +105,16 @@ class MovieBoxProvider implements NebulaProvider {
     );
   }
 
-  async getSubtitles(id: string): Promise<NebulaSubtitle[]> {
-    return movieBoxClient.getSubtitles(id);
+  async getSubtitles(
+    id: string,
+    resourceId: string
+  ): Promise<NebulaSubtitle[]> {
+    const subtitles = await movieBoxClient.getSubtitles(
+      id,
+      resourceId
+    );
+
+    return subtitles.map(mapMovieBoxSubtitle);
   }
 }
 

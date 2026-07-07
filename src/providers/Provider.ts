@@ -54,5 +54,8 @@ export interface NebulaProvider {
     episode: number
   ): Promise<NebulaStream>;
 
-  getSubtitles(id: string): Promise<NebulaSubtitle[]>;
+  getSubtitles(
+    id: string,
+    resourceId: string
+  ): Promise<NebulaSubtitle[]>;
 }

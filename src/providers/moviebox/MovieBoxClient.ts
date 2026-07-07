@@ -63,8 +63,15 @@ export class MovieBoxClient {
     );
   }
 
-  async getSubtitles(_id: string): Promise<any[]> {
-    return [];
+  async getSubtitles(
+    id: string,
+    resourceId: string
+  ): Promise<any[]> {
+    const data = await this.request(
+      `/subtitles?id=${encodeURIComponent(id)}&resourceId=${encodeURIComponent(resourceId)}`
+    );
+
+    return data.subtitles ?? [];
   }
 }
 
