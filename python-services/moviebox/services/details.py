@@ -44,11 +44,26 @@ def map_details(item):
             }
             for staff in item.staff_list
         ],
+        "seasons": (
+            [
+                {
+                    "season": season.season_number,
+                    "episodes": season.total_episodes,
+                    "maxResolution": int(season.best_resolution.resolution),
+                }
+                for season in item.seasons.seasons
+            ]
+            if item.seasons
+            else []
+        ),
     }
 
 
 async def details(subject_id: str):
     async with MovieBoxHttpClient() as client:
-        api = ItemDetails(client_session=client)
+        api = ItemDetails(
+            client_session=client,
+            include_seasons=True,
+        )
         content = await api.get_content_model(subject_id)
     return map_details(content)
