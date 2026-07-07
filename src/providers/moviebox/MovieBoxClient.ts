@@ -18,7 +18,8 @@ export class MovieBoxClient {
     const res = await fetch(`${this.baseUrl}${path}`);
 
     if (!res.ok) {
-      throw new Error(`MovieBox request failed: ${res.status}`);
+      const body = await res.text();
+      throw new Error(`MovieBox request failed: ${res.status}\n${body}`);
     }
 
     return res.json();
