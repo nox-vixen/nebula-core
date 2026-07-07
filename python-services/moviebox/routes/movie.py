@@ -15,6 +15,6 @@ router = APIRouter(prefix="/movie", tags=["Movie"])
 
 @router.get("")
 async def movie(
-    detailPath: str = Query(..., description="MovieBox detail path"),
+    id: str = Query(..., description="MovieBox subject id"),
 ):
-    return await moviebox_service.details(detailPath)
+    return await moviebox_service.details(id)

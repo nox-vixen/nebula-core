@@ -32,9 +32,9 @@ class MovieBoxService:
             page=page,
         )
 
-    async def details(self, detail_path: str):
+    async def details(self, subject_id: str):
         return await details(
-            detail_path=detail_path,
+            subject_id=subject_id,
         )
 
 

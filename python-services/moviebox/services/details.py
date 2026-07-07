@@ -59,12 +59,12 @@ def map_details(item):
     }
 
 
-async def details(detail_path: str):
+async def details(subject_id: str):
     async with MovieBoxHttpClient() as client:
         api = ItemDetails(
             client_session=client,
         )
 
-        content = await api.get_content_model(detail_path)
+        content = await api.get_content_model(subject_id)
 
     return map_details(content)
