@@ -92,6 +92,18 @@ class MovieBoxProvider implements NebulaProvider {
     return movieBoxClient.getMovieStreams(id);
   }
 
+  async getEpisodeStreams(
+    seriesId: string,
+    season: number,
+    episode: number
+  ): Promise<NebulaStream> {
+    return movieBoxClient.getEpisodeStreams(
+      seriesId,
+      season,
+      episode
+    );
+  }
+
   async getSubtitles(id: string): Promise<NebulaSubtitle[]> {
     return movieBoxClient.getSubtitles(id);
   }

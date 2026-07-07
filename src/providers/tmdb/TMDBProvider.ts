@@ -93,6 +93,14 @@ export const tmdbProvider: NebulaProvider = {
     };
   },
 
+  async getEpisodeStreams(
+    _seriesId: string,
+    _season: number,
+    _episode: number
+  ): Promise<any> {
+    throw new Error("TMDB does not provide streams.");
+  },
+
   async getSubtitles(_id: string): Promise<NebulaSubtitle[]> {
     return [];
   }

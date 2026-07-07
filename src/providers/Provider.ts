@@ -48,5 +48,11 @@ export interface NebulaProvider {
 
   getWatchData(id: string): Promise<NebulaStream>;
 
+  getEpisodeStreams(
+    seriesId: string,
+    season: number,
+    episode: number
+  ): Promise<NebulaStream>;
+
   getSubtitles(id: string): Promise<NebulaSubtitle[]>;
 }
