@@ -73,9 +73,15 @@ export function mapMovieBoxStream(
 }
 
 export function mapMovieBoxSubtitle(
-  _subtitle: MovieBoxSubtitle
+  subtitle: MovieBoxSubtitle
 ): NebulaSubtitle {
-  throw new MovieBoxNotImplementedError("MovieBox subtitle mapper");
+  return {
+    id: subtitle.language,
+    language: subtitle.language,
+    label: subtitle.label,
+    url: subtitle.url,
+    isDefault: subtitle.language === "en"
+  };
 }
 
 

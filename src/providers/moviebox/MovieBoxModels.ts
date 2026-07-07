@@ -16,10 +16,10 @@ export interface MovieBoxStream {
 
 export interface MovieBoxSubtitle {
   language: string;
+  label: string;
   url: string;
-  format: string;
-  default?: boolean;
-  forced?: boolean;
+  delay?: number;
+  size?: number;
 }
 
 export interface MovieBoxHealth {

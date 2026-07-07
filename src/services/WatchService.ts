@@ -16,6 +16,11 @@ export class WatchService {
       episode,
     );
   }
+
+
+  async getSubtitles(id: string) {
+    return movieBoxProvider.getSubtitles(id);
+  }
 }
 
 export const watchService = new WatchService();

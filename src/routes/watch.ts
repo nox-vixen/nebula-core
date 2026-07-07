@@ -16,6 +16,25 @@ router.get("/:id", async (req, res) => {
   }
 });
 
+
+router.get("/:id/subtitles", async (req, res) => {
+  try {
+    const subtitles = await watchService.getSubtitles(req.params.id);
+
+    res.json({
+      success: true,
+      subtitles
+    });
+  } catch (err) {
+    console.error(err);
+
+    res.status(500).json({
+      success: false,
+      message: "Unable to fetch subtitles."
+    });
+  }
+});
+
 router.get("/series/:id/:season/:episode", async (req, res) => {
   try {
     const stream = await watchService.getEpisodeStreams(
