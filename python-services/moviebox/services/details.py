@@ -16,13 +16,23 @@ def map_details(item):
         "id": subject.subjectId,
         "title": subject.title,
         "description": subject.description,
-        "type": str(subject.subjectType).lower(),
+        "type": (
+            "movie" if str(subject.subjectType) == "1"
+            else "series" if str(subject.subjectType) == "2"
+            else "anime" if str(subject.subjectType) == "3"
+            else "video" if str(subject.subjectType) == "5"
+            else "unknown"
+        ),
         "year": subject.releaseDate.year if subject.releaseDate else None,
         "duration": subject.duration,
         "genres": subject.genre,
         "country": subject.countryName,
         "rating": subject.imdbRatingValue,
-        "poster": str(subject.cover) if subject.cover else None,
+        "poster": (
+            str(subject.cover.url)
+            if subject.cover and getattr(subject.cover, "url", None)
+            else None
+        ),
         "detailPath": subject.detailPath,
         "cast": [
             {
