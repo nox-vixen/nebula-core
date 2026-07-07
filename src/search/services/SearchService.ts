@@ -3,7 +3,7 @@
  * NebulaOS
  * File: src/search/services/SearchService.ts
  * Purpose: Universal Search Service
- * Phase: 3
+ * Phase: 4.3
  * ==========================================================
  */
 
@@ -11,8 +11,7 @@ import { cache } from "../../cache";
 import { CacheKey } from "../../cache/models/CacheKey";
 import { CacheTTL } from "../../cache/models/CacheTTL";
 
-import { tmdbService } from "../../providers/tmdb/TMDBService";
-import { mapTMDBMovieToSearchResult } from "../../providers/tmdb/mapper";
+import { movieBoxProvider } from "../../providers/moviebox";
 
 import { SearchOptions } from "../models/SearchOptions";
 import { SearchResponse } from "../models/SearchResponse";
@@ -25,21 +24,18 @@ export class SearchService {
       CacheKey.search(options.query),
       CacheTTL.SEARCH,
       async () => {
-        const response = await tmdbService.searchMovies(
-          options.query,
-          page
-        );
+        const results = await movieBoxProvider.search(options.query);
 
         return {
-          results: response.results.map(mapTMDBMovieToSearchResult),
-          page: response.page,
-          totalPages: response.total_pages,
-          totalResults: response.total_results,
-          providers: ["tmdb"],
+          results,
+          page,
+          totalPages: 1,
+          totalResults: results.length,
+          providers: ["moviebox"],
           cached: false
         };
       },
-      ["search", "tmdb"]
+      ["search", "moviebox"]
     );
   }
 }
