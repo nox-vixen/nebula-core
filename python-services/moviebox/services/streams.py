@@ -13,9 +13,13 @@ from ..provider import (
 
 
 async def movie_streams(session, query: str):
-    search = Search(session=session)
+    search = Search(
+        session=session,
+        query=query,
+        page=1,
+    )
 
-    results = await search.get_content_model(query=query, page=1)
+    results = await search.get_content_model()
 
     if not results.items:
         return {"streams": []}
