@@ -3,7 +3,7 @@
  * NebulaOS
  * File: src/providers/moviebox/MovieBoxProvider.ts
  * Purpose: MovieBox Provider
- * Phase: 4.1
+ * Phase: 4.2
  * ==========================================================
  */
 
@@ -20,66 +20,82 @@ import {
   NebulaTVShow
 } from "../../models";
 
-import { MovieBoxNotImplementedError } from "./MovieBoxExceptions";
+import { movieBoxClient } from "./MovieBoxClient";
 
-export const movieBoxProvider: NebulaProvider = {
-  id: "moviebox",
+class MovieBoxProvider implements NebulaProvider {
+  id = "moviebox";
 
-  name: "MovieBox",
+  name = "MovieBox";
 
-  capabilities: [
+  capabilities = [
     ProviderCapability.MOVIE,
     ProviderCapability.SERIES,
     ProviderCapability.EPISODE,
     ProviderCapability.WATCH,
     ProviderCapability.SUBTITLES
-  ],
+  ];
 
   async healthCheck() {
-    return false;
-  },
+    return movieBoxClient.health();
+  }
 
   async getHome(): Promise<NebulaSearchResult[]> {
-    throw new MovieBoxNotImplementedError("Home");
-  },
+    const data = await movieBoxClient.getHome();
 
-  async search(_query: string): Promise<NebulaSearchResult[]> {
-    throw new MovieBoxNotImplementedError("Search");
-  },
+    const section =
+      data.sections.find((s: any) => s.type === "SUBJECTS_MOVIE") ??
+      data.sections[0];
 
-  async getTrending(): Promise<NebulaSearchResult[]> {
-    throw new MovieBoxNotImplementedError("Trending");
-  },
+    return (section?.items ?? []).map((item: any) => ({
+      id: item.id,
+      provider: "moviebox",
+      type: item.type === "series" ? "tv" : "movie",
+      title: item.title,
+      poster: item.poster,
+      rating: item.rating,
+      year: item.year
+    }));
+  }
 
-  async getLatest(): Promise<NebulaSearchResult[]> {
-    throw new MovieBoxNotImplementedError("Latest");
-  },
+  async search(query: string): Promise<NebulaSearchResult[]> {
+    return movieBoxClient.search(query);
+  }
+
+  async getTrending() {
+    return this.getHome();
+  }
+
+  async getLatest() {
+    return this.getHome();
+  }
 
   async getGenres(): Promise<NebulaGenre[]> {
-    throw new MovieBoxNotImplementedError("Genres");
-  },
+    return [];
+  }
 
   async getMovie(_id: string): Promise<NebulaMovie> {
-    throw new MovieBoxNotImplementedError("Movie");
-  },
+    throw new Error("Coming in Phase 4.3");
+  }
 
   async getSeries(_id: string): Promise<NebulaTVShow> {
-    throw new MovieBoxNotImplementedError("Series");
-  },
+    throw new Error("Coming in Phase 4.3");
+  }
 
   async getEpisode(
     _seriesId: string,
     _season: number,
     _episode: number
   ): Promise<NebulaEpisode> {
-    throw new MovieBoxNotImplementedError("Episode");
-  },
-
-  async getWatchData(_id: string): Promise<NebulaStream> {
-    throw new MovieBoxNotImplementedError("Watch");
-  },
-
-  async getSubtitles(_id: string): Promise<NebulaSubtitle[]> {
-    throw new MovieBoxNotImplementedError("Subtitles");
+    throw new Error("Coming in Phase 4.3");
   }
-};
+
+  async getWatchData(id: string): Promise<NebulaStream> {
+    return movieBoxClient.getMovieStreams(id);
+  }
+
+  async getSubtitles(id: string): Promise<NebulaSubtitle[]> {
+    return movieBoxClient.getSubtitles(id);
+  }
+}
+
+export const movieBoxProvider = new MovieBoxProvider();
