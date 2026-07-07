@@ -25,11 +25,11 @@ def map_search_results(content):
         "results": [
             {
                 "id": item.subject_id,
-                "detailPath": item.detail_path,
+                "detailPath": item.detail_url,
                 "title": item.title,
                 "type": _subject_type(item.subject_type),
                 "year": item.release_date.year if item.release_date else None,
-                "rating": item.imdb_ratingValue,
+                "rating": item.imdb_rating_value,
                 "poster": item.cover.url if item.cover else None,
             }
             for item in content.items
