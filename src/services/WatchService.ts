@@ -1,9 +1,8 @@
-import { providerManager } from "./ProviderManager";
+import { movieBoxProvider } from "../providers/moviebox";
 
 export class WatchService {
   async getWatchData(id: string) {
-    const provider = providerManager.getDefaultProvider();
-    return provider.getWatchData(id);
+    return movieBoxProvider.getWatchData(id);
   }
 }
 
