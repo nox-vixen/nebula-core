@@ -6,8 +6,8 @@ Phase 4.5
 ==========================================================
 """
 
-from moviebox_api.v3 import (
-    MovieBoxHttpClient,
+from moviebox_api.v3.http_client import MovieBoxHttpClient
+from moviebox_api.v3.core import (
     Search,
     ItemDetails,
     DownloadableVideoFilesDetail,
