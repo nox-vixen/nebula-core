@@ -13,6 +13,7 @@ from .services.search import search
 from .services.details import details
 from .services.streams import movie_streams, episode_streams
 from .services.home import home
+from .services.subtitles import subtitles
 
 
 class MovieBoxService:
@@ -56,8 +57,12 @@ class MovieBoxService:
     ):
         return await episode_streams(subject_id, season, episode)
 
-    async def get_subtitles(self, media_id: str):
-        raise NotImplementedError("Subtitle resolution not implemented.")
+    async def get_subtitles(
+        self,
+        subject_id: str,
+        resource_id: str,
+    ):
+        return await subtitles(subject_id, resource_id)
 
 
 moviebox_service = MovieBoxService()
