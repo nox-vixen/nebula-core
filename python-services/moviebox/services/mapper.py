@@ -21,15 +21,15 @@ def map_search_results(content):
     return {
         "page": content.pager.page,
         "hasMore": content.pager.has_more,
-        "total": content.pager.totalCount,
+        "total": content.pager.total_count,
         "results": [
             {
-                "id": item.subjectId,
-                "detailPath": item.detailPath,
+                "id": item.subject_id,
+                "detailPath": item.detail_path,
                 "title": item.title,
-                "type": _subject_type(item.subjectType),
-                "year": item.releaseDate.year if item.releaseDate else None,
-                "rating": item.imdbRatingValue,
+                "type": _subject_type(item.subject_type),
+                "year": item.release_date.year if item.release_date else None,
+                "rating": item.imdb_ratingValue,
                 "poster": item.cover.url if item.cover else None,
             }
             for item in content.items
