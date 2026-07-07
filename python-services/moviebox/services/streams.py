@@ -2,64 +2,67 @@
 ==========================================================
 NebulaOS
 MovieBox Stream Service
-Phase 4.4
+Phase 4.5
+Android API (v3)
 ==========================================================
 """
 
-from ..provider import Search
-from moviebox_api.v2.helpers import get_absolute_url
+from moviebox_api.v3.constants import CustomResolutionType
+from ..provider_v3 import (
+    MovieBoxHttpClient,
+    Search,
+    DownloadableVideoFilesDetail,
+)
 
 
-async def movie_streams(session, query: str):
-    search = Search(
-        session=session,
-        query=query,
-        page=1,
-    )
+async def movie_streams(query: str):
+    async with MovieBoxHttpClient() as client:
+        search = Search(
+            client_session=client,
+            query=query,
+            page=1,
+        )
 
-    results = await search.get_content_model()
+        results = await search.get_content_model()
 
-    if not results.items:
-        return {"streams": []}
+        if not results.items:
+            return {"streams": []}
 
-    item = results.items[0]
+        movie = results.items[0]
 
-    data = await session.get_with_cookies_from_api(
-        url=get_absolute_url("/wefeed-h5-bff/web/subject/play"),
-        params={
-            "subjectId": item.subjectId,
-            "se": 0,
-            "ep": 0,
-        },
-        headers={
-            "Referer": get_absolute_url(f"/movies/{item.detailPath}")
-        },
-    )
+        downloads = DownloadableVideoFilesDetail(
+            client_session=client,
+            resolution=CustomResolutionType.BEST,
+        )
 
-    streams = data.get("streams", [])
+        data = await downloads.get_content_model(
+            subject_id=movie.subject_id,
+            release_date=str(movie.release_date),
+        )
 
-    best = max(streams, key=lambda s: s.get("resolutions", 0), default=None)
-
-    return {
-        "id": item.subjectId,
-        "title": item.title,
-        "streams": [
+        streams = [
             {
-                "quality": s.get("resolutions"),
-                "codec": s.get("codecName"),
-                "format": s.get("format"),
-                "size": s.get("size"),
-                "duration": s.get("duration"),
-                "url": s.get("url"),
+                "title": f.title,
+                "quality": int(f.resolution),
+                "codec": f.codec_name,
+                "size": f.size,
+                "duration": f.duration,
+                "url": str(f.url),
+                "resourceId": f.resource_id,
             }
-            for s in streams
-        ],
-        "best": (
-            {
-                "quality": best.get("resolutions"),
-                "url": best.get("url"),
-            }
-            if best
-            else None
-        ),
-    }
+            for f in data.list
+        ]
+
+        return {
+            "id": movie.subject_id,
+            "title": movie.title,
+            "streams": streams,
+            "best": (
+                {
+                    "quality": int(data.best_media_file.resolution),
+                    "url": str(data.best_media_file.url),
+                }
+                if streams
+                else None
+            ),
+        }

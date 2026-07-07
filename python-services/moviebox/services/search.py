@@ -2,31 +2,27 @@
 ==========================================================
 NebulaOS
 File: services/search.py
-Purpose: MovieBox Search Service
-Phase: 4.2
+Purpose: MovieBox Search Service (v3)
+Phase: 4.5
 ==========================================================
 """
 
-from ..provider import Search
+from ..provider_v3 import (
+    MovieBoxHttpClient,
+    Search,
+)
+
 from .mapper import map_search_results
 
 
-async def search(session, query: str, page: int = 1):
-    """
-    Execute a MovieBox search.
+async def search(query: str, page: int = 1):
+    async with MovieBoxHttpClient() as client:
+        search_client = Search(
+            client_session=client,
+            query=query,
+            page=page,
+        )
 
-    NOTE:
-    This is currently the Nebula wrapper around the upstream API.
-    Response normalization into Nebula's universal models will be
-    implemented in the next milestone.
-    """
-
-    search_client = Search(
-        session=session,
-        query=query,
-        page=page,
-    )
-
-    content = await search_client.get_content_model()
+        content = await search_client.get_content_model()
 
     return map_search_results(content)

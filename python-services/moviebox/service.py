@@ -8,7 +8,6 @@ Phase: 4.2
 """
 
 from .config import settings
-from .provider import Session
 
 from .services.search import search
 from .services.details import details
@@ -19,9 +18,7 @@ class MovieBoxService:
     """Nebula facade around the upstream moviebox-api."""
 
     def __init__(self):
-        self.session = Session(
-            timeout=settings.MOVIEBOX_TIMEOUT
-        )
+        pass
 
     async def health(self):
         return {
@@ -31,7 +28,6 @@ class MovieBoxService:
 
     async def search(self, query: str, page: int = 1):
         return await search(
-            session=self.session,
             query=query,
             page=page,
         )
@@ -44,10 +40,7 @@ class MovieBoxService:
 
 
     async def movie_streams(self, query: str):
-        return await movie_streams(
-            session=self.session,
-            query=query,
-        )
+        return await movie_streams(query)
 
     async def get_movie_streams(self, movie_id: str):
         raise NotImplementedError("Movie stream resolution not implemented.")
