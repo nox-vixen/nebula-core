@@ -12,6 +12,7 @@ from .config import settings
 from .services.search import search
 from .services.details import details
 from .services.streams import movie_streams
+from .services.home import home
 
 
 class MovieBoxService:
@@ -37,6 +38,9 @@ class MovieBoxService:
             subject_id=subject_id,
         )
 
+
+    async def home(self, page: int = 1):
+        return await home(page)
 
     async def movie_streams(self, query: str):
         return await movie_streams(query)
