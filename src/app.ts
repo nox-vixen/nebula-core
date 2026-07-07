@@ -26,4 +26,11 @@ app.get("/api/health", (_req, res) => {
   });
 });
 
+
+app.get("/api/debug/moviebox", (_req, res) => {
+  res.json({
+    moviebox: process.env.MOVIEBOX_SERVICE_URL,
+  });
+});
+
 export default app;
