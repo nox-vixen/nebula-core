@@ -1,7 +1,13 @@
 /**
- * NebulaOS Universal TV Show Model
- * Every provider must map TV series into this format.
+ * ==========================================================
+ * NebulaOS
+ * File: src/models/media/TVShow.ts
+ * Purpose: Universal TV Show Model
+ * Phase: 4.6
+ * ==========================================================
  */
+
+import { NebulaSeason } from "./Season";
 
 export interface NebulaTVShow {
   /** Unique ID within the provider */
@@ -25,14 +31,17 @@ export interface NebulaTVShow {
   /** Last air date */
   lastAirDate?: string;
 
-  /** Current status (Returning, Ended, etc.) */
+  /** Current status */
   status?: string;
 
-  /** Number of seasons */
-  seasons?: number;
+  /** Total number of seasons */
+  seasonCount?: number;
 
-  /** Number of episodes */
-  episodes?: number;
+  /** Total number of episodes */
+  episodeCount?: number;
+
+  /** Season list */
+  seasons?: NebulaSeason[];
 
   /** Average rating */
   rating?: number;

@@ -11,7 +11,8 @@ import {
   NebulaMovie,
   NebulaSearchResult,
   NebulaStream,
-  NebulaSubtitle
+  NebulaSubtitle,
+  NebulaTVShow
 } from "../../models";
 
 import {
@@ -75,4 +76,29 @@ export function mapMovieBoxSubtitle(
   _subtitle: MovieBoxSubtitle
 ): NebulaSubtitle {
   throw new MovieBoxNotImplementedError("MovieBox subtitle mapper");
+}
+
+
+export function mapMovieBoxSeries(series: any): NebulaTVShow {
+  return {
+    id: String(series.id),
+    provider: "moviebox",
+    title: series.title,
+    originalTitle: series.title,
+    overview: series.description ?? "",
+    firstAirDate: series.year ? `${series.year}-01-01` : undefined,
+    rating: series.rating,
+    genres: series.genres ?? [],
+    poster: series.poster,
+    backdrop: undefined,
+    seasonCount: Array.isArray(series.seasons) ? series.seasons.length : undefined,
+    episodeCount: Array.isArray(series.seasons)
+      ? series.seasons.reduce((t: number, s: any) => t + (s.episodes ?? 0), 0)
+      : undefined,
+    seasons: (series.seasons ?? []).map((season: any) => ({
+      season: season.season,
+      episodes: season.episodes,
+      maxResolution: season.maxResolution
+    }))
+  };
 }

@@ -21,7 +21,11 @@ import {
 } from "../../models";
 
 import { movieBoxClient } from "./MovieBoxClient";
-import { mapMovieBoxSearchResult } from "./MovieBoxMapper";
+import {
+  mapMovieBoxSearchResult,
+  mapMovieBoxMovie,
+  mapMovieBoxSeries
+} from "./MovieBoxMapper";
 
 class MovieBoxProvider implements NebulaProvider {
   id = "moviebox";
@@ -66,12 +70,14 @@ class MovieBoxProvider implements NebulaProvider {
     return [];
   }
 
-  async getMovie(_id: string): Promise<NebulaMovie> {
-    throw new Error("Coming in Phase 4.3");
+  async getMovie(id: string): Promise<NebulaMovie> {
+    const movie = await movieBoxClient.getMovie(id);
+    return mapMovieBoxMovie(movie);
   }
 
-  async getSeries(_id: string): Promise<NebulaTVShow> {
-    throw new Error("Coming in Phase 4.3");
+  async getSeries(id: string): Promise<NebulaTVShow> {
+    const data = await movieBoxClient.getSeries(id);
+    return mapMovieBoxSeries(data);
   }
 
   async getEpisode(
