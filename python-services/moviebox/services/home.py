@@ -28,7 +28,7 @@ async def home(page: int = 1):
     async with MovieBoxHttpClient() as client:
 
         data = await client.get_from_api(
-            "/homepage",
+            "/wefeed-mobile-bff/tab-operating",
             params={
                 "page": page,
                 "tabId": TabID.ALL.value,
