@@ -3,7 +3,7 @@
  * NebulaOS
  * File: src/providers/moviebox/MovieBoxProvider.ts
  * Purpose: MovieBox Provider
- * Phase: 4.2
+ * Phase: 4.3
  * ==========================================================
  */
 
@@ -21,10 +21,10 @@ import {
 } from "../../models";
 
 import { movieBoxClient } from "./MovieBoxClient";
+import { mapMovieBoxSearchResult } from "./MovieBoxMapper";
 
 class MovieBoxProvider implements NebulaProvider {
   id = "moviebox";
-
   name = "MovieBox";
 
   capabilities = [
@@ -46,19 +46,12 @@ class MovieBoxProvider implements NebulaProvider {
       data.sections.find((s: any) => s.type === "SUBJECTS_MOVIE") ??
       data.sections[0];
 
-    return (section?.items ?? []).map((item: any) => ({
-      id: item.id,
-      provider: "moviebox",
-      type: item.type === "series" ? "tv" : "movie",
-      title: item.title,
-      poster: item.poster,
-      rating: item.rating,
-      year: item.year
-    }));
+    return (section?.items ?? []).map(mapMovieBoxSearchResult);
   }
 
   async search(query: string): Promise<NebulaSearchResult[]> {
-    return movieBoxClient.search(query);
+    const response = await movieBoxClient.search(query);
+    return (response.results ?? []).map(mapMovieBoxSearchResult);
   }
 
   async getTrending() {

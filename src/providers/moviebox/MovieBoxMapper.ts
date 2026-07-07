@@ -2,31 +2,23 @@
  * ==========================================================
  * NebulaOS
  * File: src/providers/moviebox/MovieBoxMapper.ts
- * Purpose: MovieBox → Nebula Model Mapper
- * Phase: 4.1
+ * Purpose: MovieBox → Nebula Mapper
+ * Phase: 4.3
  * ==========================================================
  */
 
-import {
-  NebulaStream,
-  NebulaSubtitle
-} from "../../models";
+import { NebulaSearchResult } from "../../models";
 
-import {
-  MovieBoxStream,
-  MovieBoxSubtitle
-} from "./MovieBoxModels";
-
-import { MovieBoxNotImplementedError } from "./MovieBoxExceptions";
-
-export function mapMovieBoxStream(
-  _stream: MovieBoxStream
-): NebulaStream {
-  throw new MovieBoxNotImplementedError("MovieBox stream mapper");
-}
-
-export function mapMovieBoxSubtitle(
-  _subtitle: MovieBoxSubtitle
-): NebulaSubtitle {
-  throw new MovieBoxNotImplementedError("MovieBox subtitle mapper");
+export function mapMovieBoxSearchResult(item: any): NebulaSearchResult {
+  return {
+    id: String(item.id),
+    provider: "moviebox",
+    type: item.type === "series" ? "tv" : "movie",
+    title: item.title,
+    overview: item.overview,
+    poster: item.poster,
+    backdrop: item.backdrop,
+    rating: item.rating,
+    year: item.year
+  };
 }
