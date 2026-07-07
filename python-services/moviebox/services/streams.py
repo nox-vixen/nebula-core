@@ -37,18 +37,13 @@ async def movie_streams(subject_id: str):
             for f in data.list
         ]
 
-        return {
-            "id": subject_id,
-            "streams": streams,
-            "best": (
-                {
-                    "quality": int(data.best_media_file.resolution),
-                    "url": str(data.best_media_file.url),
-                }
-                if streams
-                else None
-            ),
-        }
+    best = max(streams, key=lambda s: s["quality"]) if streams else None
+
+    return {
+        "id": subject_id,
+        "streams": streams,
+        "best": best,
+    }
 
 
 async def episode_streams(
