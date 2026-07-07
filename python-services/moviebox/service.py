@@ -34,7 +34,6 @@ class MovieBoxService:
 
     async def details(self, detail_path: str):
         return await details(
-            session=self.session,
             detail_path=detail_path,
         )
 

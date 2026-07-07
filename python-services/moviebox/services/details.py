@@ -2,52 +2,69 @@
 ==========================================================
 NebulaOS
 MovieBox Details Service
-Phase 4.3
+Phase 4.5
+MovieBox Android API (v3)
 ==========================================================
 """
 
-from ..provider import ItemDetails
+from ..provider_v3 import (
+    MovieBoxHttpClient,
+    ItemDetails,
+)
+
+
+def _subject_type(value):
+    mapping = {
+        1: "movie",
+        2: "series",
+        3: "anime",
+        6: "video",
+    }
+    return mapping.get(int(value), "unknown")
 
 
 def map_details(item):
     subject = item.subject
 
     return {
-        "id": subject.subjectId,
+        "id": subject.subject_id,
         "title": subject.title,
         "description": subject.description,
-        "type": (
-            "movie" if str(subject.subjectType) == "1"
-            else "series" if str(subject.subjectType) == "2"
-            else "anime" if str(subject.subjectType) == "3"
-            else "video" if str(subject.subjectType) == "5"
-            else "unknown"
-        ),
-        "year": subject.releaseDate.year if subject.releaseDate else None,
+        "type": _subject_type(subject.subject_type),
+        "year": subject.release_date.year if subject.release_date else None,
         "duration": subject.duration,
         "genres": subject.genre,
-        "country": subject.countryName,
-        "rating": subject.imdbRatingValue,
+        "country": subject.country_name,
+        "rating": subject.imdb_rating_value,
         "poster": (
             str(subject.cover.url)
-            if subject.cover and getattr(subject.cover, "url", None)
-            else None
+            if subject.cover else None
         ),
-        "detailPath": subject.detailPath,
+        "detailPath": (
+            str(subject.detail_url)
+            if subject.detail_url else None
+        ),
         "cast": [
             {
                 "name": star.name,
                 "character": star.character,
-                "avatar": str(star.avatarUrl),
+                "avatar": (
+                    str(star.avatar.url)
+                    if getattr(star, "avatar", None)
+                    else None
+                ),
             }
             for star in item.stars
         ],
     }
 
 
-async def details(session, detail_path: str):
-    client = ItemDetails(session=session)
+async def details(detail_path: str):
+    async with MovieBoxHttpClient() as client:
+        api = ItemDetails(
+            client_session=client,
+        )
 
-    content = await client.get_content_model(detail_path)
+        content = await api.get_content_model(detail_path)
 
     return map_details(content)
