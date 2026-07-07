@@ -8,6 +8,7 @@ Phase: 4.2
 """
 
 from ..provider import Search
+from .mapper import map_search_results
 
 
 async def search(session, query: str, page: int = 1):
@@ -26,4 +27,6 @@ async def search(session, query: str, page: int = 1):
         page=page,
     )
 
-    return await search_client.get_content_model()
+    content = await search_client.get_content_model()
+
+    return map_search_results(content)
