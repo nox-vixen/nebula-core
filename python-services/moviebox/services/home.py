@@ -47,9 +47,20 @@ async def home(page: int = 1):
 
                 cover = item.get("cover") or {}
 
+                title = (item.get("title") or "").strip()
+                subject_id = str(item.get("subjectId") or "")
+                poster = cover.get("url")
+
+                if (
+                    not title
+                    or subject_id in ("", "0")
+                    or not poster
+                ):
+                    continue
+
                 movies.append({
-                    "id": item.get("subjectId"),
-                    "title": item.get("title"),
+                    "id": subject_id,
+                    "title": title,
                     "type": _type(item.get("subjectType")),
                     "year": (
                         int(item["releaseDate"][:4])
@@ -57,7 +68,7 @@ async def home(page: int = 1):
                         else None
                     ),
                     "rating": float(item.get("imdbRatingValue") or 0),
-                    "poster": cover.get("url"),
+                    "poster": poster,
                 })
 
             # Banner carousel
