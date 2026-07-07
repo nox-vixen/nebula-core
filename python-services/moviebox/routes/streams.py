@@ -11,3 +11,16 @@ router = APIRouter(
 @router.get("/movie")
 async def movie(id: str):
     return await moviebox_service.movie_streams(id)
+
+
+@router.get("/episode")
+async def episode(
+    id: str,
+    season: int,
+    episode: int,
+):
+    return await moviebox_service.episode_streams(
+        id,
+        season,
+        episode,
+    )

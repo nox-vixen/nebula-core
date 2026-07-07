@@ -48,13 +48,13 @@ class MovieBoxService:
     async def get_movie_streams(self, movie_id: str):
         raise NotImplementedError("Movie stream resolution not implemented.")
 
-    async def get_episode_streams(
+    async def episode_streams(
         self,
-        series_id: str,
+        subject_id: str,
         season: int,
         episode: int,
     ):
-        raise NotImplementedError("Episode stream resolution not implemented.")
+        return await episode_streams(subject_id, season, episode)
 
     async def get_subtitles(self, media_id: str):
         raise NotImplementedError("Subtitle resolution not implemented.")
