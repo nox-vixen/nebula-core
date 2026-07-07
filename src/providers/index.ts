@@ -11,8 +11,8 @@ import { providerRegistry } from "./ProviderRegistry";
 import { tmdbProvider } from "./tmdb";
 import { movieBoxProvider } from "./moviebox";
 
-providerRegistry.register(tmdbProvider);
 providerRegistry.register(movieBoxProvider);
+providerRegistry.register(tmdbProvider);
 
 export * from "./Provider";
 export * from "./Capability";
