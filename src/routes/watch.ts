@@ -28,12 +28,15 @@ router.get("/:id/subtitles/:resourceId", async (req, res) => {
       success: true,
       subtitles
     });
-  } catch (err) {
+  } catch (err: any) {
+    console.error("===== SUBTITLE ERROR =====");
     console.error(err);
+    console.error(err?.stack);
 
     res.status(500).json({
       success: false,
-      message: "Unable to fetch subtitles."
+      message: "Unable to fetch subtitles.",
+      error: err?.message ?? String(err)
     });
   }
 });
