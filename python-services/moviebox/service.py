@@ -11,7 +11,7 @@ from .config import settings
 
 from .services.search import search
 from .services.details import details
-from .services.streams import movie_streams
+from .services.streams import movie_streams, episode_streams
 from .services.home import home
 
 
