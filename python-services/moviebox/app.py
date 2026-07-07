@@ -11,6 +11,7 @@ from fastapi import FastAPI
 
 from .routes.health import router as health_router
 from .routes.search import router as search_router
+from .routes.streams import router as streams_router
 from .routes.movie import router as movie_router
 
 app = FastAPI(
@@ -21,6 +22,7 @@ app = FastAPI(
 
 app.include_router(health_router)
 app.include_router(search_router)
+app.include_router(streams_router)
 app.include_router(movie_router)
 
 

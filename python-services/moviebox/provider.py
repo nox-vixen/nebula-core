@@ -25,4 +25,7 @@ __all__ = [
     "TVSeriesDetails",
     "DownloadableSingleFilesDetail",
     "DownloadableTVSeriesFilesDetail",
+    "StreamFilesDetail",
 ]
+
+from moviebox_api.v1.stream import StreamFilesDetail

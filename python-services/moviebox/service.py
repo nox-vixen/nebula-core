@@ -12,6 +12,7 @@ from .provider import Session
 
 from .services.search import search
 from .services.details import details
+from .services.streams import movie_streams
 
 
 class MovieBoxService:
@@ -39,6 +40,13 @@ class MovieBoxService:
         return await details(
             session=self.session,
             detail_path=detail_path,
+        )
+
+
+    async def movie_streams(self, query: str):
+        return await movie_streams(
+            session=self.session,
+            query=query,
         )
 
     async def get_movie_streams(self, movie_id: str):
