@@ -15,11 +15,20 @@ export class MovieBoxClient {
   readonly retryCount = movieBoxConfig.retryCount;
 
   private async request(path: string) {
-    const res = await fetch(`${this.baseUrl}${path}`);
+    const url = `${this.baseUrl}${path}`;
+
+    console.log("[MovieBox]", url);
+
+    const res = await fetch(url);
 
     if (!res.ok) {
       const body = await res.text();
-      throw new Error(`MovieBox request failed: ${res.status}\n${body}`);
+
+      console.error("MovieBox URL:", url);
+      console.error("Status:", res.status);
+      console.error("Response:", body.substring(0, 300));
+
+      throw new Error(`MovieBox request failed: ${res.status}`);
     }
 
     return res.json();
