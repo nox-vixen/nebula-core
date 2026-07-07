@@ -9,5 +9,5 @@ router = APIRouter(
 
 
 @router.get("/movie")
-async def movie(query: str):
-    return await moviebox_service.movie_streams(query)
+async def movie(id: str):
+    return await moviebox_service.movie_streams(id)

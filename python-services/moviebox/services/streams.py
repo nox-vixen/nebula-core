@@ -10,35 +10,18 @@ Android API (v3)
 from moviebox_api.v3.constants import CustomResolutionType
 from ..provider_v3 import (
     MovieBoxHttpClient,
-    Search,
     DownloadableVideoFilesDetail,
 )
 
 
-async def movie_streams(query: str):
+async def movie_streams(subject_id: str):
     async with MovieBoxHttpClient() as client:
-        search = Search(
-            client_session=client,
-            query=query,
-            page=1,
-        )
-
-        results = await search.get_content_model()
-
-        if not results.items:
-            return {"streams": []}
-
-        movie = results.items[0]
-
         downloads = DownloadableVideoFilesDetail(
             client_session=client,
             resolution=CustomResolutionType.BEST,
         )
 
-        data = await downloads.get_content_model(
-            subject_id=movie.subject_id,
-            release_date=str(movie.release_date),
-        )
+        data = await downloads.get_content_model(subject_id)
 
         streams = [
             {
@@ -54,8 +37,7 @@ async def movie_streams(query: str):
         ]
 
         return {
-            "id": movie.subject_id,
-            "title": movie.title,
+            "id": subject_id,
             "streams": streams,
             "best": (
                 {
