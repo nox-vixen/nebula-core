@@ -20,7 +20,7 @@ def _subject_type(value: int) -> str:
 def map_search_results(content):
     return {
         "page": content.pager.page,
-        "hasMore": content.pager.hasMore,
+        "hasMore": content.pager.has_more,
         "total": content.pager.totalCount,
         "results": [
             {
