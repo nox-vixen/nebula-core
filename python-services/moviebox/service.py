@@ -11,6 +11,7 @@ from .config import settings
 from .provider import Session
 
 from .services.search import search
+from .services.details import details
 
 
 class MovieBoxService:
@@ -32,6 +33,12 @@ class MovieBoxService:
             session=self.session,
             query=query,
             page=page,
+        )
+
+    async def details(self, detail_path: str):
+        return await details(
+            session=self.session,
+            detail_path=detail_path,
         )
 
     async def get_movie_streams(self, movie_id: str):
