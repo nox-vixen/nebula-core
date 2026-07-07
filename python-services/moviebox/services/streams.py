@@ -6,10 +6,8 @@ Phase 4.4
 ==========================================================
 """
 
-from ..provider import (
-    Search,
-    StreamFilesDetail,
-)
+from ..provider import Search
+from moviebox_api.v2.helpers import get_absolute_url
 
 
 async def movie_streams(session, query: str):
@@ -26,36 +24,42 @@ async def movie_streams(session, query: str):
 
     item = results.items[0]
 
-    stream = StreamFilesDetail(
-        session=session,
-        item=item,
+    data = await session.get_with_cookies_from_api(
+        url=get_absolute_url("/wefeed-h5-bff/web/subject/play"),
+        params={
+            "subjectId": item.subjectId,
+            "se": 0,
+            "ep": 0,
+        },
+        headers={
+            "Referer": get_absolute_url(f"/movies/{item.detailPath}")
+        },
     )
 
-    data = await stream.get_modelled_content(
-        season=0,
-        episode=0,
-    )
+    streams = data.get("streams", [])
+
+    best = max(streams, key=lambda s: s.get("resolutions", 0), default=None)
 
     return {
         "id": item.subjectId,
         "title": item.title,
         "streams": [
             {
-                "quality": s.resolutions,
-                "codec": s.codecName,
-                "format": s.format,
-                "size": s.size,
-                "duration": s.duration,
-                "url": str(s.url),
+                "quality": s.get("resolutions"),
+                "codec": s.get("codecName"),
+                "format": s.get("format"),
+                "size": s.get("size"),
+                "duration": s.get("duration"),
+                "url": s.get("url"),
             }
-            for s in data.streams
+            for s in streams
         ],
         "best": (
             {
-                "quality": data.best_stream_file.resolutions,
-                "url": str(data.best_stream_file.url),
+                "quality": best.get("resolutions"),
+                "url": best.get("url"),
             }
-            if data.best_stream_file
+            if best
             else None
         ),
     }
