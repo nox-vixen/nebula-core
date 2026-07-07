@@ -42,7 +42,8 @@ async def home(page: int = 1):
 
             movies = []
 
-            for item in section.get("subjects", []):
+            # Standard subject rows
+            for item in section.get("subjects") or []:
 
                 cover = item.get("cover") or {}
 
@@ -56,6 +57,48 @@ async def home(page: int = 1):
                         else None
                     ),
                     "rating": float(item.get("imdbRatingValue") or 0),
+                    "poster": cover.get("url"),
+                })
+
+            # Banner carousel
+            banner = section.get("banner") or {}
+
+            for item in banner.get("banners") or []:
+
+                subject = item.get("subject") or {}
+                cover = subject.get("cover") or item.get("image") or {}
+
+                movies.append({
+                    "id": item.get("subjectId"),
+                    "title": subject.get("title") or item.get("content"),
+                    "type": _type(subject.get("subjectType")),
+                    "year": (
+                        int(subject["releaseDate"][:4])
+                        if subject.get("releaseDate")
+                        else None
+                    ),
+                    "rating": float(subject.get("imdbRatingValue") or 0),
+                    "poster": cover.get("url"),
+                })
+
+            # Custom rows
+            custom = section.get("customData") or {}
+
+            for item in custom.get("items") or []:
+
+                subject = item.get("subject") or {}
+                cover = subject.get("cover") or item.get("image") or {}
+
+                movies.append({
+                    "id": item.get("subjectId"),
+                    "title": subject.get("title") or item.get("content"),
+                    "type": _type(subject.get("subjectType")),
+                    "year": (
+                        int(subject["releaseDate"][:4])
+                        if subject.get("releaseDate")
+                        else None
+                    ),
+                    "rating": float(subject.get("imdbRatingValue") or 0),
                     "poster": cover.get("url"),
                 })
 
