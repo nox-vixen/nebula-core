@@ -1,53 +1,68 @@
-from moviebox_api.v3.constants import TabID
-from ..provider_v3 import MovieBoxHttpClient, Homepage
+"""
+==========================================================
+NebulaOS
+MovieBox Homepage Service (Raw JSON)
+Phase 4.6
+==========================================================
+"""
+
+from moviebox_api.v3.constants import DEFAULT_VERSION, TabID
+from ..provider_v3 import MovieBoxHttpClient
 
 
-def _type(v):
+def _type(value):
     try:
-        v = int(v)
+        value = int(getattr(value, "value", value))
     except Exception:
-        try:
-            v = int(getattr(v, "value"))
-        except Exception:
-            return "unknown"
+        return "unknown"
 
     return {
         1: "movie",
         2: "series",
         3: "anime",
         6: "video",
-    }.get(v, "unknown")
+    }.get(value, "unknown")
 
 
 async def home(page: int = 1):
     async with MovieBoxHttpClient() as client:
-        api = Homepage(
-            client_session=client,
-            page_number=page,
-            tab_id=TabID.ALL,
-        )
 
-        data = await api.get_content_model()
+        data = await client.get_from_api(
+            "/homepage",
+            params={
+                "page": page,
+                "tabId": TabID.ALL.value,
+                "version": DEFAULT_VERSION,
+            },
+        )
 
         sections = []
 
-        for section in data.items:
-            subjects = []
+        for section in data.get("items", []):
 
-            for item in section.subjects:
-                subjects.append({
-                    "id": item.subject_id,
-                    "title": item.title,
-                    "type": _type(item.subject_type),
-                    "year": item.release_date.year if item.release_date else None,
-                    "rating": float(item.imdb_rating_value or 0),
-                    "poster": str(item.cover.url) if item.cover else None,
+            movies = []
+
+            for item in section.get("subjects", []):
+
+                cover = item.get("cover") or {}
+
+                movies.append({
+                    "id": item.get("subjectId"),
+                    "title": item.get("title"),
+                    "type": _type(item.get("subjectType")),
+                    "year": (
+                        int(item["releaseDate"][:4])
+                        if item.get("releaseDate")
+                        else None
+                    ),
+                    "rating": float(item.get("imdbRatingValue") or 0),
+                    "poster": cover.get("url"),
                 })
 
             sections.append({
-                "title": section.title,
-                "type": section.type,
-                "items": subjects,
+                "title": section.get("title"),
+                "type": section.get("type"),
+                "items": movies,
             })
 
         return {
