@@ -1,17 +1,16 @@
 import { Router } from "express";
-import { tmdbService } from "../providers/tmdb/TMDBService";
-import { mapTMDBMovieDetailsToMovie } from "../providers/tmdb/mapper";
-import { TMDBMovieDetails } from "../providers/tmdb/types";
+import { movieBoxClient } from "../providers/moviebox";
+import { mapMovieBoxMovie } from "../providers/moviebox";
 
 const router = Router();
 
 router.get("/:id", async (req, res) => {
   try {
-    const movie = await tmdbService.getMovieDetails(req.params.id) as TMDBMovieDetails;
+    const movie = await movieBoxClient.getMovie(req.params.id);
 
     res.json({
       success: true,
-      movie: mapTMDBMovieDetailsToMovie(movie)
+      movie: mapMovieBoxMovie(movie)
     });
   } catch (error) {
     console.error(error);
