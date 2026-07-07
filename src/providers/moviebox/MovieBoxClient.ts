@@ -54,11 +54,13 @@ export class MovieBoxClient {
   }
 
   async getEpisodeStreams(
-    _seriesId: string,
-    _season: number,
-    _episode: number
+    seriesId: string,
+    season: number,
+    episode: number
   ): Promise<any> {
-    throw new Error("Episode streams not implemented yet.");
+    return this.request(
+      `/streams/episode?id=${encodeURIComponent(seriesId)}&season=${season}&episode=${episode}`
+    );
   }
 
   async getSubtitles(_id: string): Promise<any[]> {
