@@ -27,7 +27,7 @@ def map_search_results(content):
                 "id": item.subjectId,
                 "title": item.title,
                 "type": _subject_type(item.subjectType),
-                "year": item.releaseDate[:4] if item.releaseDate else None,
+                "year": item.releaseDate.year if item.releaseDate else None,
                 "rating": item.imdbRatingValue,
                 "poster": item.cover.url if item.cover else None,
             }
