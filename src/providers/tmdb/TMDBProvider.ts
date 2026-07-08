@@ -22,7 +22,10 @@ import {
 } from "../../models";
 
 import { tmdbService } from "./TMDBService";
-import { mapTMDBMovieToSearchResult } from "./mapper";
+import {
+  mapTMDBMovieToSearchResult,
+  mapTMDBMovieDetailsToMovie
+} from "./mapper";
 
 export const tmdbProvider: NebulaProvider = {
   id: "tmdb",
@@ -64,8 +67,9 @@ export const tmdbProvider: NebulaProvider = {
     };
   },
 
-  async search(_query: string): Promise<NebulaSearchResult[]> {
-    return [];
+  async search(query: string): Promise<NebulaSearchResult[]> {
+    const response = await tmdbService.searchMovies(query);
+    return response.results.map(mapTMDBMovieToSearchResult);
   },
 
   async getTrending(): Promise<NebulaSearchResult[]> {
@@ -80,8 +84,9 @@ export const tmdbProvider: NebulaProvider = {
     return [];
   },
 
-  async getMovie(_id: string): Promise<NebulaMovie> {
-    throw new Error("Not implemented");
+  async getMovie(id: string): Promise<NebulaMovie> {
+    const movie = await tmdbService.getMovieDetails(id);
+    return mapTMDBMovieDetailsToMovie(movie);
   },
 
   async getSeries(_id: string): Promise<NebulaTVShow> {
