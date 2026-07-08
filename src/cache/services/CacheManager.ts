@@ -71,4 +71,15 @@ export class CacheManager {
 
     return value;
   }
+
+  async clear(): Promise<void> {
+    await this.primary.clear();
+
+    if (this.secondary) {
+      await this.secondary.clear();
+    }
+
+    this.tagIndex.clear();
+  }
+
 }

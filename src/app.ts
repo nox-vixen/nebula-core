@@ -6,6 +6,7 @@ import cors from "cors";
 import homeRoute from "./routes/home";
 import searchRoute from "./routes/search";
 import tvRoute from "./routes/tv";
+import debugRoute from "./routes/debug";
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.use("/api/search", searchRoute);
 app.use("/api/watch", watchRoute);
 app.use("/api/movie", movieRoute);
 app.use("/api/tv", tvRoute);
+app.use("/api/debug", debugRoute);
 
 app.get("/api/health", (_req, res) => {
   res.json({
