@@ -24,7 +24,8 @@ import {
 import { tmdbService } from "./TMDBService";
 import {
   mapTMDBMovieToSearchResult,
-  mapTMDBMovieDetailsToMovie
+  mapTMDBMovieDetailsToMovie,
+  mapTMDBTVDetailsToTVShow
 } from "./mapper";
 
 export const tmdbProvider: NebulaProvider = {
@@ -89,8 +90,9 @@ export const tmdbProvider: NebulaProvider = {
     return mapTMDBMovieDetailsToMovie(movie);
   },
 
-  async getSeries(_id: string): Promise<NebulaTVShow> {
-    throw new Error("Not implemented");
+  async getSeries(id: string): Promise<NebulaTVShow> {
+    const show = await tmdbService.getTVDetails(id);
+    return mapTMDBTVDetailsToTVShow(show as any);
   },
 
   async getEpisode(

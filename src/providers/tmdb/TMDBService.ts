@@ -8,7 +8,7 @@
  */
 
 import { env } from "../../config/env";
-import { TMDBTrendingResponse, TMDBMovieDetails } from "./types";
+import { TMDBTrendingResponse, TMDBMovieDetails, TMDBTVDetails } from "./types";
 
 class TMDBService {
   private readonly baseUrl = env.TMDB_BASE_URL;
@@ -71,6 +71,11 @@ class TMDBService {
 
   async getMovieDetails(id: string): Promise<TMDBMovieDetails> {
     return this.request<TMDBMovieDetails>(`/movie/${id}`);
+  }
+
+
+  async getTVDetails(id: string): Promise<TMDBTVDetails> {
+    return this.request<TMDBTVDetails>(`/tv/${id}`);
   }
 
   async getDocumentaryMovies(): Promise<TMDBTrendingResponse> {

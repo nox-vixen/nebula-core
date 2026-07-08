@@ -7,8 +7,8 @@
  * ==========================================================
  */
 
-import { NebulaMovie, NebulaSearchResult } from "../../models";
-import { TMDBMovie, TMDBMovieDetails } from "./types";
+import { NebulaMovie, NebulaSearchResult, NebulaTVShow } from "../../models";
+import { TMDBMovie, TMDBMovieDetails, TMDBTVDetails } from "./types";
 
 const POSTER_BASE = "https://image.tmdb.org/t/p/w500";
 const BACKDROP_BASE = "https://image.tmdb.org/t/p/w780";
@@ -63,5 +63,35 @@ export function mapTMDBMovieDetailsToMovie(
     backdrop: movie.backdrop_path
       ? `${BACKDROP_BASE}${movie.backdrop_path}`
       : undefined,
+  };
+}
+
+
+export function mapTMDBTVDetailsToTVShow(
+  show: TMDBTVDetails
+): NebulaTVShow {
+  return {
+    id: String(show.id),
+    provider: "tmdb",
+    title: show.name,
+    originalTitle: show.original_name,
+    overview: show.overview,
+    firstAirDate: show.first_air_date,
+    rating: show.vote_average,
+    voteCount: show.vote_count,
+    seasonCount: show.number_of_seasons,
+    episodeCount: show.number_of_episodes,
+    genres: show.genres.map(g => g.name),
+    language: show.original_language,
+    poster: show.poster_path
+      ? `${POSTER_BASE}${show.poster_path}`
+      : undefined,
+    backdrop: show.backdrop_path
+      ? `${BACKDROP_BASE}${show.backdrop_path}`
+      : undefined,
+    seasons: show.seasons.map(s => ({
+      season: s.season_number,
+      episodes: s.episode_count
+    }))
   };
 }
