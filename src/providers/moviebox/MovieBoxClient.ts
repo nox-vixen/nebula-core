@@ -14,25 +14,68 @@ export class MovieBoxClient {
   readonly timeout = movieBoxConfig.timeout;
   readonly retryCount = movieBoxConfig.retryCount;
 
+  
   private async request(path: string) {
     const url = `${this.baseUrl}${path}`;
 
-    console.log("[MovieBox]", url);
+    let lastError: unknown;
 
-    const res = await fetch(url);
+    for (let attempt = 1; attempt <= this.retryCount; attempt++) {
+      const controller = new AbortController();
 
-    if (!res.ok) {
-      const body = await res.text();
+      const timeout = setTimeout(() => {
+        controller.abort();
+      }, this.timeout);
 
-      console.error("MovieBox URL:", url);
-      console.error("Status:", res.status);
-      console.error("Response:", body.substring(0, 300));
+      try {
+        console.log(`[MovieBox] Attempt ${attempt}/${this.retryCount}: ${url}`);
 
-      throw new Error(`MovieBox request failed: ${res.status}`);
+        const res = await fetch(url, {
+          signal: controller.signal,
+        });
+
+        clearTimeout(timeout);
+
+        if (res.ok) {
+          return await res.json();
+        }
+
+        const body = await res.text();
+
+        console.error("MovieBox URL:", url);
+        console.error("Status:", res.status);
+        console.error("Response:", body.substring(0, 300));
+
+        if ([502, 503, 504].includes(res.status) && attempt < this.retryCount) {
+          console.log(`Retrying in ${attempt} second(s)...`);
+          await new Promise(resolve => setTimeout(resolve, attempt * 1000));
+          continue;
+        }
+
+        throw new Error(`MovieBox request failed: ${res.status}`);
+      } catch (error: any) {
+        clearTimeout(timeout);
+
+        lastError = error;
+
+        console.error(
+          `MovieBox attempt ${attempt} failed:`,
+          error?.message ?? error
+        );
+
+        if (attempt >= this.retryCount) {
+          break;
+        }
+
+        await new Promise(resolve => setTimeout(resolve, attempt * 1000));
+      }
     }
 
-    return res.json();
+    throw lastError instanceof Error
+      ? lastError
+      : new Error("MovieBox request failed");
   }
+
 
   async health() {
     return this.request("/health");
