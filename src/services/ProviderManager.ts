@@ -3,7 +3,6 @@
  * NebulaOS
  * File: src/services/ProviderManager.ts
  * Purpose: Health-Aware Provider Manager
- * Phase: 4.3
  * ==========================================================
  */
 
@@ -18,13 +17,34 @@ class ProviderManager {
   async getProvider(capability: ProviderCapability): Promise<NebulaProvider> {
     const providers = providerRegistry.getByCapability(capability);
 
+    console.log(
+      "[ProviderManager] Candidates:",
+      providers.map(p => p.id)
+    );
+
     for (const provider of providers) {
       try {
-        if (await provider.healthCheck()) {
+        console.log("[ProviderManager] Checking:", provider.id);
+
+        const healthy = await provider.healthCheck();
+
+        console.log(
+          `[ProviderManager] ${provider.id} healthy =`,
+          healthy
+        );
+
+        if (healthy) {
+          console.log(
+            "[ProviderManager] Selected:",
+            provider.id
+          );
           return provider;
         }
-      } catch {
-        // Ignore failed health checks and try the next provider.
+      } catch (err: any) {
+        console.error(
+          `[ProviderManager] ${provider.id} failed:`,
+          err?.message ?? err
+        );
       }
     }
 
@@ -33,12 +53,12 @@ class ProviderManager {
     );
   }
 
-  async getProviderFor(capability: ProviderCapability): Promise<NebulaProvider> {
+  async getProviderFor(capability: ProviderCapability) {
     return this.getProvider(capability);
   }
 
-  async getDefaultProvider(): Promise<NebulaProvider> {
-    return await this.getProvider(ProviderCapability.HOME);
+  async getDefaultProvider() {
+    return this.getProvider(ProviderCapability.HOME);
   }
 }
 
