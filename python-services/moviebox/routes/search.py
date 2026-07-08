@@ -14,11 +14,6 @@ from ..service import moviebox_service
 router = APIRouter()
 
 
-@router.get("/health")
-async def health():
-    return await moviebox_service.health()
-
-
 @router.get("/search")
 async def search(
     query: str = Query(..., min_length=1),
