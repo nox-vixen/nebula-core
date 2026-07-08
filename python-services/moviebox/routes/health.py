@@ -135,3 +135,13 @@ async def list_api_paths():
             paths[name] = getattr(core, name)
 
     return paths
+
+
+@router.get("/inspect-downloadable")
+async def inspect_downloadable():
+    import inspect
+    from moviebox_api.v3.core import DownloadableFilesDetail
+
+    return {
+        "source": inspect.getsource(DownloadableFilesDetail)
+    }
