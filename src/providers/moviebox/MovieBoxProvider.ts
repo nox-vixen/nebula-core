@@ -3,13 +3,12 @@
  * NebulaOS
  * File: src/providers/moviebox/MovieBoxProvider.ts
  * Purpose: MovieBox Provider
- * Phase: 4.3
+ * Phase: 4.4
  * ==========================================================
  */
 
 import { NebulaProvider } from "../Provider";
 import { ProviderCapability } from "../Capability";
-
 import {
   NebulaEpisode,
   NebulaGenre,
@@ -21,6 +20,7 @@ import {
 } from "../../models";
 
 import { movieBoxClient } from "./MovieBoxClient";
+
 import {
   mapMovieBoxSearchResult,
   mapMovieBoxMovie,
@@ -29,6 +29,7 @@ import {
 } from "./MovieBoxMapper";
 
 class MovieBoxProvider implements NebulaProvider {
+
   id = "moviebox";
   name = "MovieBox";
 
@@ -44,14 +45,35 @@ class MovieBoxProvider implements NebulaProvider {
     return movieBoxClient.health();
   }
 
-  async getHome(): Promise<NebulaSearchResult[]> {
+  async getHome() {
     const data = await movieBoxClient.getHome();
 
-    const section =
-      data.sections.find((s: any) => s.type === "SUBJECTS_MOVIE") ??
-      data.sections[0];
+    const sections = data.sections ?? [];
 
-    return (section?.items ?? []).map(mapMovieBoxSearchResult);
+    const bannerSection =
+      sections.find((s: any) => s.type === "BANNER");
+
+    const banner =
+      (bannerSection?.items ?? []).map(mapMovieBoxSearchResult);
+
+    const mappedSections = sections
+      .filter((s: any) => s.type !== "BANNER")
+      .map((section: any, index: number) => ({
+        id:
+          String(section.title ?? section.type ?? `section-${index}`)
+            .toLowerCase()
+            .replace(/[^\w]+/g, "-")
+            .replace(/^-|-$/g, ""),
+        title: section.title,
+        type: section.type,
+        items: (section.items ?? []).map(mapMovieBoxSearchResult)
+      }));
+
+    return {
+      provider: this.id,
+      banner,
+      sections: mappedSections
+    };
   }
 
   async search(query: string): Promise<NebulaSearchResult[]> {
@@ -60,11 +82,11 @@ class MovieBoxProvider implements NebulaProvider {
   }
 
   async getTrending() {
-    return this.getHome();
+    return [];
   }
 
   async getLatest() {
-    return this.getHome();
+    return [];
   }
 
   async getGenres(): Promise<NebulaGenre[]> {
@@ -72,13 +94,11 @@ class MovieBoxProvider implements NebulaProvider {
   }
 
   async getMovie(id: string): Promise<NebulaMovie> {
-    const movie = await movieBoxClient.getMovie(id);
-    return mapMovieBoxMovie(movie);
+    return mapMovieBoxMovie(await movieBoxClient.getMovie(id));
   }
 
   async getSeries(id: string): Promise<NebulaTVShow> {
-    const data = await movieBoxClient.getSeries(id);
-    return mapMovieBoxSeries(data);
+    return mapMovieBoxSeries(await movieBoxClient.getSeries(id));
   }
 
   async getEpisode(
@@ -86,7 +106,7 @@ class MovieBoxProvider implements NebulaProvider {
     _season: number,
     _episode: number
   ): Promise<NebulaEpisode> {
-    throw new Error("Coming in Phase 4.3");
+    throw new Error("Coming in Phase 4.4");
   }
 
   async getWatchData(id: string): Promise<NebulaStream> {
@@ -109,13 +129,13 @@ class MovieBoxProvider implements NebulaProvider {
     id: string,
     resourceId: string
   ): Promise<NebulaSubtitle[]> {
-    const subtitles = await movieBoxClient.getSubtitles(
-      id,
-      resourceId
-    );
 
-    return subtitles.map(mapMovieBoxSubtitle);
+    return (
+      await movieBoxClient.getSubtitles(id, resourceId)
+    ).map(mapMovieBoxSubtitle);
+
   }
+
 }
 
 export const movieBoxProvider = new MovieBoxProvider();
