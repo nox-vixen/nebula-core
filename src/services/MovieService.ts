@@ -1,8 +1,8 @@
 /**
  * ==========================================================
  * NebulaOS
- * File: src/services/SearchService.ts
- * Purpose: Universal Search Service
+ * File: src/services/MovieService.ts
+ * Purpose: Universal Movie Service
  * Phase: 4.7
  * ==========================================================
  */
@@ -13,23 +13,23 @@ import { CacheTTL } from "../cache/models/CacheTTL";
 import { ProviderCapability } from "../providers";
 import { providerManager } from "./ProviderManager";
 
-class SearchService {
-  async search(query: string) {
+class MovieService {
+  async getMovie(id: string) {
     const provider = await providerManager.getProviderFor(
-      ProviderCapability.SEARCH
+      ProviderCapability.MOVIE
     );
 
     return cache.remember(
-      `${CacheKey.search(query)}:${provider.id}`,
-      CacheTTL.SEARCH,
+      CacheKey.details(`${provider.id}:movie:${id}`),
+      CacheTTL.DETAILS,
       async () => ({
         success: true,
         provider: provider.id,
-        results: await provider.search(query)
+        movie: await provider.getMovie(id)
       }),
-      ["search", provider.id]
+      ["details", provider.id, "movie"]
     );
   }
 }
 
-export const searchService = new SearchService();
+export const movieService = new MovieService();

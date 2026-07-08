@@ -35,11 +35,16 @@ class MovieBoxProvider implements NebulaProvider {
   name = "MovieBox";
 
   capabilities = [
+    ProviderCapability.HOME,
+    ProviderCapability.SEARCH,
+    ProviderCapability.TRENDING,
+    ProviderCapability.LATEST,
     ProviderCapability.MOVIE,
     ProviderCapability.SERIES,
     ProviderCapability.EPISODE,
     ProviderCapability.WATCH,
-    ProviderCapability.SUBTITLES
+    ProviderCapability.SUBTITLES,
+    ProviderCapability.GENRES
   ];
 
   async healthCheck() {

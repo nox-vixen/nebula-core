@@ -1,23 +1,25 @@
+/**
+ * ==========================================================
+ * NebulaOS
+ * File: src/routes/movie.ts
+ * Purpose: Universal Movie API
+ * Phase: 4.3
+ * ==========================================================
+ */
+
 import { Router } from "express";
-import { movieBoxClient } from "../providers/moviebox";
-import { mapMovieBoxMovie } from "../providers/moviebox";
+import { movieService } from "../services/MovieService";
 
 const router = Router();
 
 router.get("/:id", async (req, res) => {
   try {
-    const movie = await movieBoxClient.getMovie(req.params.id);
-
-    res.json({
-      success: true,
-      movie: mapMovieBoxMovie(movie)
-    });
+    const result = await movieService.getMovie(req.params.id);
+    res.json(result);
   } catch (error) {
-    console.error(error);
-
     res.status(500).json({
       success: false,
-      message: "Failed to load movie."
+      error: error instanceof Error ? error.message : "Unknown error"
     });
   }
 });

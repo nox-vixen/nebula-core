@@ -1,19 +1,16 @@
 import { Router } from "express";
-import { providerManager } from "../services/ProviderManager";
+import { tvService } from "../services/TVService";
 
 const router = Router();
 
 router.get("/:id", async (req, res) => {
   try {
-    const provider = providerManager.getDefaultProvider();
-
-    const series = await provider.getSeries(req.params.id);
+    const series = await tvService.getSeries(req.params.id);
 
     res.json({
       success: true,
       series
     });
-
   } catch (err) {
     console.error(err);
 
