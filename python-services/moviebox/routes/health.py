@@ -51,3 +51,14 @@ async def inspect_season():
             and not name.startswith("_")
         )
     }
+
+
+@router.get("/inspect-season-method")
+async def inspect_season_method():
+    import inspect
+    from moviebox_api.v3.core import SeasonDetails
+
+    return {
+        "get_content_model": str(inspect.signature(SeasonDetails.get_content_model)),
+        "get_content": str(inspect.signature(SeasonDetails.get_content)),
+    }
