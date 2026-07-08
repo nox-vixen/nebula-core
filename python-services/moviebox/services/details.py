@@ -95,6 +95,18 @@ async def details(subject_id: str):
         content = await api.get_content_model(subject_id)
 
         print("========== RAW ITEM ==========")
-        print(vars(content))
+        from pprint import pprint
+
+    print("========== RAW ITEM ==========")
+    pprint(content.__dict__)
+
+    for key, value in content.__dict__.items():
+        print(f"
+===== {key} =====")
+        print(type(value))
+        try:
+            pprint(value.__dict__)
+        except Exception:
+            pprint(value)
 
     return map_details(content)
