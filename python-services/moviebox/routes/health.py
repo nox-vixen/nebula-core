@@ -123,3 +123,15 @@ async def dump_season_raw():
         data = await api.get_content("6207982430134357800")
 
     return data
+
+
+@router.get("/list-api-paths")
+async def list_api_paths():
+    import moviebox_api.v3.core as core
+
+    paths = {}
+    for name in dir(core):
+        if name.endswith("_PATH"):
+            paths[name] = getattr(core, name)
+
+    return paths
