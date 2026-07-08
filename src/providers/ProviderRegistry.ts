@@ -31,7 +31,7 @@ class ProviderRegistry {
 
   getAll(): NebulaProvider[] {
     return [...this.providers.values()]
-      .sort((a, b) => b.priority - a.priority)
+      .sort((a, b) => a.priority - b.priority)
       .map(x => x.provider);
   }
 
