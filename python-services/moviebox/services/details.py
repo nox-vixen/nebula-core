@@ -101,8 +101,7 @@ async def details(subject_id: str):
     pprint(content.__dict__)
 
     for key, value in content.__dict__.items():
-        print(f"
-===== {key} =====")
+        print(f"\n===== {key} =====")
         print(type(value))
         try:
             pprint(value.__dict__)
