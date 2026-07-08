@@ -1,31 +1,45 @@
-import { movieBoxProvider } from "../providers/moviebox";
+/**
+ * ==========================================================
+ * NebulaOS
+ * File: src/services/WatchService.ts
+ * Purpose: Watch Service
+ * Phase: 4.3
+ * ==========================================================
+ */
 
-export class WatchService {
+import { providerManager } from "./ProviderManager";
+
+class WatchService {
   async getWatchData(id: string) {
-    return movieBoxProvider.getWatchData(id);
+    return providerManager
+      .getDefaultProvider()
+      .getWatchData(id);
   }
 
   async getEpisodeStreams(
     seriesId: string,
     season: number,
-    episode: number,
+    episode: number
   ) {
-    return movieBoxProvider.getEpisodeStreams(
-      seriesId,
-      season,
-      episode,
-    );
+    return providerManager
+      .getDefaultProvider()
+      .getEpisodeStreams(
+        seriesId,
+        season,
+        episode
+      );
   }
-
 
   async getSubtitles(
     id: string,
     resourceId: string
   ) {
-    return movieBoxProvider.getSubtitles(
-      id,
-      resourceId
-    );
+    return providerManager
+      .getDefaultProvider()
+      .getSubtitles(
+        id,
+        resourceId
+      );
   }
 }
 

@@ -1,8 +1,8 @@
 /**
  * ==========================================================
  * NebulaOS
- * File: src/services/HomeService.ts
- * Purpose: Home Service
+ * File: src/services/SearchService.ts
+ * Purpose: Universal Search Service
  * Phase: 4.3
  * ==========================================================
  */
@@ -12,21 +12,21 @@ import { CacheKey } from "../cache/models/CacheKey";
 import { CacheTTL } from "../cache/models/CacheTTL";
 import { providerManager } from "./ProviderManager";
 
-class HomeService {
-  async getHome() {
+class SearchService {
+  async search(query: string) {
     const provider = providerManager.getDefaultProvider();
 
     return cache.remember(
-      CacheKey.home(provider.id),
-      CacheTTL.HOME,
+      `${CacheKey.search(provider.id)}:${query.toLowerCase()}`,
+      CacheTTL.SEARCH,
       async () => ({
         success: true,
         provider: provider.id,
-        sections: await provider.getHome()
+        results: await provider.search(query)
       }),
-      ["home", provider.id]
+      ["search", provider.id]
     );
   }
 }
 
-export const homeService = new HomeService();
+export const searchService = new SearchService();
