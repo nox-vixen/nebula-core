@@ -32,3 +32,22 @@ async def inspect_core():
             if not x.startswith("_")
         )
     }
+
+
+@router.get("/inspect-season")
+async def inspect_season():
+    import inspect
+    from moviebox_api.v3.core import SeasonDetails
+
+    return {
+        "signature": str(inspect.signature(SeasonDetails)),
+        "methods": sorted(
+            name for name, obj in inspect.getmembers(SeasonDetails)
+            if callable(obj) and not name.startswith("_")
+        ),
+        "attributes": sorted(
+            name for name in dir(SeasonDetails)
+            if not callable(getattr(SeasonDetails, name))
+            and not name.startswith("_")
+        )
+    }
