@@ -7,11 +7,14 @@
  * ==========================================================
  */
 
+import { ProviderCapability } from "../providers";
 import { providerManager } from "./ProviderManager";
 
 class WatchService {
   async getWatchData(id: string) {
-    const provider = await providerManager.getDefaultProvider();
+    const provider = await providerManager.getProviderFor(
+      ProviderCapability.WATCH
+    );
     return provider.getWatchData(id);
   }
 
@@ -20,7 +23,9 @@ class WatchService {
     season: number,
     episode: number
   ) {
-    const provider = await providerManager.getDefaultProvider();
+    const provider = await providerManager.getProviderFor(
+      ProviderCapability.EPISODE
+    );
 
     return provider.getEpisodeStreams(
       seriesId,
@@ -33,7 +38,9 @@ class WatchService {
     id: string,
     resourceId: string
   ) {
-    const provider = await providerManager.getDefaultProvider();
+    const provider = await providerManager.getProviderFor(
+      ProviderCapability.SUBTITLES
+    );
 
     return provider.getSubtitles(
       id,

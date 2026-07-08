@@ -108,7 +108,29 @@ class MovieBoxProvider implements NebulaProvider {
   }
 
   async getWatchData(id: string): Promise<NebulaStream> {
-    return movieBoxClient.getMovieStreams(id);
+    const movie: any = await movieBoxClient.getMovie(id);
+
+    const streams = Array.isArray(movie.streams) ? movie.streams : [];
+
+    if (streams.length === 0) {
+      throw new Error("No streams available.");
+    }
+
+    streams.sort(
+      (a: any, b: any) => (b.resolution ?? 0) - (a.resolution ?? 0)
+    );
+
+    const best = streams[0];
+
+    return {
+      id,
+      provider: "moviebox",
+      url: best.url,
+      quality: best.quality,
+      format: "mp4",
+      size: best.size,
+      subtitles: Array.isArray(movie.subtitles) && movie.subtitles.length > 0
+    };
   }
 
   async getEpisodeStreams(
