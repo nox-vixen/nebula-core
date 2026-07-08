@@ -111,3 +111,15 @@ async def inspect_season_source():
     return {
         "source": inspect.getsource(SeasonDetails)
     }
+
+
+@router.get("/dump-season-raw")
+async def dump_season_raw():
+    from moviebox_api.v3.http_client import MovieBoxHttpClient
+    from moviebox_api.v3.core import SeasonDetails
+
+    async with MovieBoxHttpClient() as client:
+        api = SeasonDetails(client)
+        data = await api.get_content("6207982430134357800")
+
+    return data
