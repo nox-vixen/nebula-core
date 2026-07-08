@@ -78,3 +78,26 @@ async def dump_season_model():
         "type": str(type(model)),
         "repr": pformat(model.__dict__)
     }
+
+
+@router.get("/inspect-paths")
+async def inspect_paths():
+    from moviebox_api.v3.core import (
+        SEARCH_PATH,
+        SEARCH_PATH_V2,
+        SUBJECT_GET_PATH,
+        SEASON_INFO_PATH,
+        RESOURCE_PATH,
+        EXT_CAPTIONS_PATH,
+        MAIN_PAGE_PATH,
+    )
+
+    return {
+        "SEARCH_PATH": SEARCH_PATH,
+        "SEARCH_PATH_V2": SEARCH_PATH_V2,
+        "SUBJECT_GET_PATH": SUBJECT_GET_PATH,
+        "SEASON_INFO_PATH": SEASON_INFO_PATH,
+        "RESOURCE_PATH": RESOURCE_PATH,
+        "EXT_CAPTIONS_PATH": EXT_CAPTIONS_PATH,
+        "MAIN_PAGE_PATH": MAIN_PAGE_PATH,
+    }
