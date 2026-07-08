@@ -15,20 +15,20 @@ import { providerManager } from "./ProviderManager";
 
 class MovieService {
   async getMovie(id: string) {
-    const provider = await providerManager.getProviderFor(
-      ProviderCapability.MOVIE
-    );
-
-    return cache.remember(
-      CacheKey.details(`${provider.id}:movie:${id}`),
-      CacheTTL.DETAILS,
-      async () => ({
-        success: true,
-        provider: provider.id,
-        movie: await provider.getMovie(id)
-      }),
-      ["details", provider.id, "movie"]
-    );
+    return providerManager.execute(
+      ProviderCapability.MOVIE,
+      async (provider) =>
+        cache.remember(
+          CacheKey.details(`${provider.id}:movie:${id}`),
+          CacheTTL.DETAILS,
+          async () => ({
+            success: true,
+            provider: provider.id,
+            movie: await provider.getMovie(id)
+          }),
+          ["details", provider.id, "movie"]
+        )
+    ).then(({ result }) => result);
   }
 }
 

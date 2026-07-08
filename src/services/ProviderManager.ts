@@ -14,6 +14,7 @@ import {
 
 class ProviderManager {
 
+
   async getProvider(capability: ProviderCapability): Promise<NebulaProvider> {
     const providers = providerRegistry.getByCapability(capability);
 
@@ -56,6 +57,45 @@ class ProviderManager {
   async getProviderFor(capability: ProviderCapability) {
     return this.getProvider(capability);
   }
+
+
+  async execute<T>(
+    capability: ProviderCapability,
+    operation: (provider: NebulaProvider) => Promise<T>
+  ): Promise<{ provider: NebulaProvider; result: T }> {
+    const providers = providerRegistry.getByCapability(capability);
+
+    let lastError: unknown;
+
+    for (const provider of providers) {
+      try {
+        const healthy = await provider.healthCheck();
+
+        if (!healthy) {
+          continue;
+        }
+
+        const result = await operation(provider);
+
+        return {
+          provider,
+          result
+        };
+      } catch (error) {
+        console.error(
+          `[ProviderManager] ${provider.id} operation failed:`,
+          error instanceof Error ? error.message : error
+        );
+
+        lastError = error;
+      }
+    }
+
+    throw lastError instanceof Error
+      ? lastError
+      : new Error(`No provider available for ${capability}`);
+  }
+
 
   async getDefaultProvider() {
     return this.getProvider(ProviderCapability.HOME);
