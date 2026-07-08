@@ -18,29 +18,12 @@ class HomeService {
       CacheKey.home("moviebox"),
       CacheTTL.HOME,
       async () => {
-        const home = await movieBoxProvider.getHome();
-
-        const featured = home.slice(0, 8);
+        const sections = await movieBoxProvider.getHome();
 
         return {
           success: true,
           provider: "moviebox",
-
-          featured,
-
-          trending: home,
-
-          topRated: home,
-
-          action: home,
-
-          comedy: home,
-
-          horror: home,
-
-          romance: home,
-
-          documentaries: home,
+          sections
         };
       },
       ["home", "moviebox"]
