@@ -62,3 +62,19 @@ async def inspect_season_method():
         "get_content_model": str(inspect.signature(SeasonDetails.get_content_model)),
         "get_content": str(inspect.signature(SeasonDetails.get_content)),
     }
+
+
+@router.get("/dump-season-model")
+async def dump_season_model():
+    from pprint import pformat
+    from moviebox_api.v3.http_client import MovieBoxHttpClient
+    from moviebox_api.v3.core import SeasonDetails
+
+    async with MovieBoxHttpClient() as client:
+        api = SeasonDetails(client)
+        model = await api.get_content_model("6207982430134357800")
+
+    return {
+        "type": str(type(model)),
+        "repr": pformat(model.__dict__)
+    }
