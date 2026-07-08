@@ -101,3 +101,13 @@ async def inspect_paths():
         "EXT_CAPTIONS_PATH": EXT_CAPTIONS_PATH,
         "MAIN_PAGE_PATH": MAIN_PAGE_PATH,
     }
+
+
+@router.get("/inspect-season-source")
+async def inspect_season_source():
+    import inspect
+    from moviebox_api.v3.core import SeasonDetails
+
+    return {
+        "source": inspect.getsource(SeasonDetails)
+    }
