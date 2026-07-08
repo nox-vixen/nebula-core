@@ -3,7 +3,7 @@
  * NebulaOS
  * File: src/providers/tmdb/TMDBProvider.ts
  * Purpose: TMDB Provider
- * Phase: 2
+ * Phase: 4.3
  * ==========================================================
  */
 
@@ -13,6 +13,7 @@ import { ProviderCapability } from "../Capability";
 import {
   NebulaEpisode,
   NebulaGenre,
+  NebulaHome,
   NebulaMovie,
   NebulaSearchResult,
   NebulaStream,
@@ -45,10 +46,22 @@ export const tmdbProvider: NebulaProvider = {
     return true;
   },
 
-  async getHome(): Promise<NebulaSearchResult[]> {
+  async getHome(): Promise<NebulaHome> {
     const response = await tmdbService.getTrendingMovies();
 
-    return response.results.map(mapTMDBMovieToSearchResult);
+    const items = response.results.map(mapTMDBMovieToSearchResult);
+
+    return {
+      provider: "tmdb",
+      banner: items.slice(0, 5),
+      sections: [
+        {
+          title: "Trending",
+          type: "TRENDING",
+          items
+        }
+      ]
+    };
   },
 
   async search(_query: string): Promise<NebulaSearchResult[]> {
@@ -56,7 +69,7 @@ export const tmdbProvider: NebulaProvider = {
   },
 
   async getTrending(): Promise<NebulaSearchResult[]> {
-    return this.getHome();
+    return (await this.getHome()).sections[0]?.items ?? [];
   },
 
   async getLatest(): Promise<NebulaSearchResult[]> {
@@ -93,15 +106,11 @@ export const tmdbProvider: NebulaProvider = {
     };
   },
 
-  async getEpisodeStreams(
-    _seriesId: string,
-    _season: number,
-    _episode: number
-  ): Promise<any> {
+  async getEpisodeStreams(): Promise<any> {
     throw new Error("TMDB does not provide streams.");
   },
 
-  async getSubtitles(_id: string): Promise<NebulaSubtitle[]> {
+  async getSubtitles(): Promise<NebulaSubtitle[]> {
     return [];
   }
 };

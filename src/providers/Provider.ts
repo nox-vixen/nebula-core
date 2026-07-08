@@ -3,7 +3,7 @@
  * NebulaOS
  * File: src/providers/Provider.ts
  * Purpose: Universal Provider Interface
- * Phase: 2
+ * Phase: 4.3
  * ==========================================================
  */
 
@@ -14,7 +14,8 @@ import {
   NebulaGenre,
   NebulaStream,
   NebulaSubtitle,
-  NebulaSearchResult
+  NebulaSearchResult,
+  NebulaHome
 } from "../models";
 
 import { ProviderCapability } from "./Capability";
@@ -26,18 +27,14 @@ export interface NebulaProvider {
 
   healthCheck(): Promise<boolean>;
 
-  getHome(): Promise<NebulaSearchResult[]>;
+  getHome(): Promise<NebulaHome>;
 
   search(query: string): Promise<NebulaSearchResult[]>;
-
   getTrending(): Promise<NebulaSearchResult[]>;
-
   getLatest(): Promise<NebulaSearchResult[]>;
-
   getGenres(): Promise<NebulaGenre[]>;
 
   getMovie(id: string): Promise<NebulaMovie>;
-
   getSeries(id: string): Promise<NebulaTVShow>;
 
   getEpisode(
