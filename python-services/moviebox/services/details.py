@@ -66,4 +66,8 @@ async def details(subject_id: str):
             include_seasons=True,
         )
         content = await api.get_content_model(subject_id)
+
+        print("========== RAW ITEM ==========")
+        print(vars(content))
+
     return map_details(content)
