@@ -44,6 +44,33 @@ def map_details(item):
             }
             for staff in item.staff_list
         ],
+        "streams": [
+            {
+                "quality": f"{int(res.resolution)}p",
+                "resolution": int(res.resolution),
+                "codec": detector.codec_name,
+                "size": getattr(res, "size", None),
+                "url": str(res.resource_link),
+            }
+            for detector in getattr(item, "resource_detectors", [])
+            for res in getattr(detector, "resolution_list", [])
+        ],
+        "subtitles": item.subtitles,
+        "dubs": [
+            {
+                "language": dub.lan_name,
+                "code": dub.lan_code,
+                "original": dub.original,
+                "subjectId": dub.subject_id,
+            }
+            for dub in getattr(item, "dubs", [])
+        ],
+        "trailer": (
+            str(item.trailer.video_address.url)
+            if getattr(item, "trailer", None)
+            and getattr(item.trailer, "video_address", None)
+            else None
+        ),
         "seasons": (
             [
                 {
