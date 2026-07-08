@@ -3,7 +3,7 @@
  * NebulaOS
  * File: src/services/HomeService.ts
  * Purpose: Home Service
- * Phase: 4.2
+ * Phase: 4.3
  * ==========================================================
  */
 
@@ -18,12 +18,29 @@ class HomeService {
       CacheKey.home("moviebox"),
       CacheTTL.HOME,
       async () => {
-        const sections = await movieBoxProvider.getHome();
+        const home = await movieBoxProvider.getHome();
+
+        const featured = home.slice(0, 8);
 
         return {
           success: true,
           provider: "moviebox",
-          sections
+
+          featured,
+
+          trending: home,
+
+          topRated: home,
+
+          action: home,
+
+          comedy: home,
+
+          horror: home,
+
+          romance: home,
+
+          documentaries: home,
         };
       },
       ["home", "moviebox"]
