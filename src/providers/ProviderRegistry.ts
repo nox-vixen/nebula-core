@@ -49,16 +49,27 @@ class ProviderRegistry {
     const results = [];
 
     for (const { provider, priority } of this.providers.values()) {
-      results.push({
-        id: provider.id,
-        name: provider.name,
-        priority,
-        healthy: await provider.healthCheck()
-      });
+      try {
+        results.push({
+          id: provider.id,
+          name: provider.name,
+          priority,
+          healthy: await provider.healthCheck()
+        });
+      } catch (error) {
+        results.push({
+          id: provider.id,
+          name: provider.name,
+          priority,
+          healthy: false,
+          error: error instanceof Error ? error.message : "Unknown error"
+        });
+      }
     }
 
     return results;
   }
+
 }
 
 export const providerRegistry = new ProviderRegistry();
