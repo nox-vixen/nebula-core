@@ -22,7 +22,29 @@ async def movie_streams(subject_id: str):
             resolution=CustomResolutionType.BEST,
         )
 
-        data = await downloads.get_content_model(subject_id)
+        try:
+            data = await downloads.get_content_model(subject_id)
+        except Exception as e:
+            return {
+                "success": False,
+                "stage": "get_content_model",
+                "error": str(e),
+                "type": type(e).__name__,
+            }
+
+        if data is None:
+            return {
+                "success": False,
+                "stage": "empty_response",
+            }
+
+        if not hasattr(data, "list"):
+            return {
+                "success": False,
+                "stage": "missing_list",
+                "type": str(type(data)),
+                "value": repr(data),
+            }
 
         streams = [
             {
