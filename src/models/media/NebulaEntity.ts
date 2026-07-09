@@ -14,6 +14,9 @@ export interface NebulaEntity {
   /** Original provider ID */
   providerId: string;
 
+  /** Provider-specific opaque reference (e.g. MovieBox detailPath) */
+  providerRef?: string;
+
   /** Source attribution */
   sources: {
     metadata: string;

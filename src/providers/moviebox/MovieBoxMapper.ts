@@ -26,6 +26,14 @@ export function mapMovieBoxSearchResult(item: any): NebulaSearchResult {
   return {
     id: String(item.id),
     provider: "moviebox",
+    providerRef:
+      series.detailPath ??
+      series.slug ??
+      undefined,
+    providerRef:
+      item.detailPath ??
+      item.slug ??
+      undefined,
     type: item.type === "series" ? "tv" : "movie",
     title: item.title,
     poster: item.poster,
@@ -47,6 +55,10 @@ export function mapMovieBoxMovie(movie: any): NebulaMovie {
   return {
     id: String(movie.id),
     providerId: "moviebox",
+    providerRef:
+      movie.detailPath ??
+      movie.slug ??
+      undefined,
     sources: {
       metadata: "moviebox",
       artwork: "moviebox",

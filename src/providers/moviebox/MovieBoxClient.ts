@@ -99,10 +99,17 @@ export class MovieBoxClient {
     return this.request(`/movie?id=${encodeURIComponent(id)}`);
   }
 
-  async getMovieStreams(id: string): Promise<any> {
-    return this.request(
-      `/streams/movie?id=${encodeURIComponent(id)}`
-    );
+  async getMovieStreams(
+    id: string,
+    providerRef?: string
+  ): Promise<any> {
+    let url = `/streams/movie?id=${encodeURIComponent(id)}`;
+
+    if (providerRef) {
+      url += `&ref=${encodeURIComponent(providerRef)}`;
+    }
+
+    return this.request(url);
   }
 
   async getEpisodeStreams(

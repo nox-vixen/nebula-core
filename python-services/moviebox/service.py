@@ -43,8 +43,15 @@ class MovieBoxService:
     async def home(self, page: int = 1):
         return await home(page)
 
-    async def movie_streams(self, query: str):
-        return await movie_streams(query)
+    async def movie_streams(
+        self,
+        query: str,
+        provider_ref: str = "",
+    ):
+        return await movie_streams(
+            query,
+            provider_ref,
+        )
 
     async def get_movie_streams(self, movie_id: str):
         raise NotImplementedError("Movie stream resolution not implemented.")

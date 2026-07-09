@@ -19,7 +19,12 @@ const router = Router();
 
 router.get("/:id", async (req, res) => {
   try {
-    const stream = await watchService.getWatchData(req.params.id);
+    const stream = await watchService.getWatchData(
+      req.params.id,
+      typeof req.query.ref === "string"
+        ? req.query.ref
+        : undefined
+    );
 
     res.json(
       successResponse(stream, {

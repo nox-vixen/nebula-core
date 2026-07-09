@@ -107,8 +107,15 @@ class MovieBoxProvider implements NebulaProvider {
     throw new Error("Coming in Phase 4.3");
   }
 
-  async getWatchData(id: string): Promise<NebulaStream> {
-    const response: any = await movieBoxClient.getMovieStreams(id);
+  async getWatchData(
+    id: string,
+    providerRef?: string
+  ): Promise<NebulaStream> {
+    const response: any =
+      await movieBoxClient.getMovieStreams(
+        id,
+        providerRef
+      );
 
     const streams =
       response?.streams ??
