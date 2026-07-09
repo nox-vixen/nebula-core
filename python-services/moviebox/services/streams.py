@@ -2,18 +2,14 @@
 ==========================================================
 NebulaOS
 MovieBox Stream Service
-Phase 4.6
-Android API (v3)
+Deep Debug Build
 ==========================================================
 """
 
-from pprint import pprint
+from pprint import pformat
 
 from moviebox_api.v3.constants import CustomResolutionType
-from ..provider_v3 import (
-    MovieBoxHttpClient,
-    DownloadableVideoFilesDetail,
-)
+from ..provider_v3 import MovieBoxHttpClient, DownloadableVideoFilesDetail
 
 
 async def movie_streams(subject_id: str):
@@ -23,35 +19,21 @@ async def movie_streams(subject_id: str):
             resolution=CustomResolutionType.BEST,
         )
 
-        try:
-            data = await downloads.get_content_model(subject_id)
+        data = await downloads.get_content_model(subject_id)
 
-            print("\n===== RAW DOWNLOADABLE FILES =====")
-            for i, f in enumerate(data.list):
-                print(f"\n---- Stream {i} ----")
-                pprint(f.__dict__)
+        print("\n================ FULL OBJECT ================\n")
+        print(pformat(vars(data), width=140))
 
-        except Exception as e:
-            return {
-                "success": False,
-                "stage": "get_content_model",
-                "error": str(e),
-                "type": type(e).__name__,
-            }
-
-        if data is None:
-            return {
-                "success": False,
-                "stage": "empty_response",
-            }
-
-        if not hasattr(data, "list"):
-            return {
-                "success": False,
-                "stage": "missing_list",
-                "type": str(type(data)),
-                "value": repr(data),
-            }
+        for name in dir(data):
+            if name.startswith("_"):
+                continue
+            try:
+                value = getattr(data, name)
+                print(f"\n===== ATTRIBUTE: {name} =====")
+                print(type(value))
+                print(pformat(value, width=140))
+            except Exception as e:
+                print(name, e)
 
         streams = [
             {
@@ -66,56 +48,15 @@ async def movie_streams(subject_id: str):
             for f in data.list
         ]
 
-        best = max(streams, key=lambda s: s["quality"]) if streams else None
-
         return {
             "id": subject_id,
             "streams": streams,
-            "best": best,
+            "best": max(streams, key=lambda x: x["quality"]) if streams else None,
         }
 
 
 async def episode_streams(subject_id: str, season: int, episode: int):
-    async with MovieBoxHttpClient() as client:
-        downloads = DownloadableVideoFilesDetail(
-            client_session=client,
-            resolution=CustomResolutionType.BEST,
-        )
-
-        data = await downloads.get_content_model(subject_id)
-
-        print("\n===== RAW DOWNLOADABLE FILES =====")
-        for i, f in enumerate(data.list):
-            print(f"\n---- Stream {i} ----")
-            pprint(f.__dict__)
-
-        matches = [
-            f
-            for f in data.list
-            if f.season == season and f.episode == episode
-        ]
-
-        streams = [
-            {
-                "title": f.title,
-                "season": f.season,
-                "episode": f.episode,
-                "quality": int(f.resolution),
-                "codec": f.codec_name,
-                "size": f.size,
-                "duration": f.duration,
-                "url": str(f.url),
-                "resourceId": f.resource_id,
-            }
-            for f in matches
-        ]
-
-        best = max(streams, key=lambda s: s["quality"]) if streams else None
-
-        return {
-            "id": subject_id,
-            "season": season,
-            "episode": episode,
-            "streams": streams,
-            "best": best,
-        }
+    return {
+        "success": False,
+        "message": "Episode debug temporarily disabled."
+    }
