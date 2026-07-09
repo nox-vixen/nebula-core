@@ -97,7 +97,7 @@ async def resolve_movie(subject_id: str, detail_path: str):
 
     dom = await _request(f"{API_BASE}/media-player/get-domain")
 
-    domain = dom["data"]["domain"]
+    domain = dom.get("data", "https://netfilm.world").rstrip("/")
 
     referer = (
         f"{domain}/spa/videoPlayPage/movies/"
