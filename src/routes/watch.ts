@@ -1,21 +1,42 @@
+/**
+ * ==========================================================
+ * NebulaOS
+ * File: src/routes/watch.ts
+ * Purpose: Universal Watch API
+ * Phase: 5.4
+ * ==========================================================
+ */
+
 import { Router } from "express";
 import { watchService } from "../services/WatchService";
+import {
+  successResponse,
+  errorResponse
+} from "../utils/apiResponse";
+import { logger } from "../utils/logger";
 
 const router = Router();
 
 router.get("/:id", async (req, res) => {
   try {
     const stream = await watchService.getWatchData(req.params.id);
-    res.json({ success: true, stream });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({
-      success: false,
-      message: "Unable to fetch watch data."
-    });
+
+    res.json(
+      successResponse(stream, {
+        provider: stream.provider,
+        message: "Stream resolved successfully."
+      })
+    );
+  } catch (error) {
+    logger.error("WatchRoute", "Failed to resolve movie stream", error);
+
+    res.status(500).json(
+      errorResponse(error, {
+        message: "Unable to resolve stream."
+      })
+    );
   }
 });
-
 
 router.get("/:id/subtitles/:resourceId", async (req, res) => {
   try {
@@ -24,20 +45,19 @@ router.get("/:id/subtitles/:resourceId", async (req, res) => {
       req.params.resourceId
     );
 
-    res.json({
-      success: true,
-      subtitles
-    });
-  } catch (err: any) {
-    console.error("===== SUBTITLE ERROR =====");
-    console.error(err);
-    console.error(err?.stack);
+    res.json(
+      successResponse(subtitles, {
+        message: "Subtitles retrieved successfully."
+      })
+    );
+  } catch (error) {
+    logger.error("WatchRoute", "Failed to retrieve subtitles", error);
 
-    res.status(500).json({
-      success: false,
-      message: "Unable to fetch subtitles.",
-      error: err?.message ?? String(err)
-    });
+    res.status(500).json(
+      errorResponse(error, {
+        message: "Unable to fetch subtitles."
+      })
+    );
   }
 });
 
@@ -49,16 +69,20 @@ router.get("/series/:id/:season/:episode", async (req, res) => {
       Number(req.params.episode)
     );
 
-    res.json({
-      success: true,
-      stream
-    });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({
-      success: false,
-      message: "Unable to fetch episode stream."
-    });
+    res.json(
+      successResponse(stream, {
+        provider: stream.provider,
+        message: "Episode stream resolved successfully."
+      })
+    );
+  } catch (error) {
+    logger.error("WatchRoute", "Failed to resolve episode stream", error);
+
+    res.status(500).json(
+      errorResponse(error, {
+        message: "Unable to resolve episode stream."
+      })
+    );
   }
 });
 

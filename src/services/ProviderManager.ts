@@ -3,6 +3,7 @@
  * NebulaOS
  * File: src/services/ProviderManager.ts
  * Purpose: Health-Aware Provider Manager
+ * Phase: 5.2
  * ==========================================================
  */
 
@@ -12,21 +13,24 @@ import {
   NebulaProvider
 } from "../providers";
 import { clusterManager } from "./ClusterManager";
+import { logger } from "../utils/logger";
 
 class ProviderManager {
-
-
   async getProvider(capability: ProviderCapability): Promise<NebulaProvider> {
     const providers = providerRegistry.getByCapability(capability);
 
-    console.log(
-      "[ProviderManager] Candidates:",
+    logger.debug(
+      "ProviderManager",
+      `Candidate providers for '${capability}'`,
       providers.map(p => p.id)
     );
 
     for (const provider of providers) {
       try {
-        console.log("[ProviderManager] Checking:", provider.id);
+        logger.debug(
+          "ProviderManager",
+          `Checking provider '${provider.id}'`
+        );
 
         if (provider.id === "moviebox") {
           await clusterManager.ensureMovieBoxAwake();
@@ -34,22 +38,25 @@ class ProviderManager {
 
         const healthy = await provider.healthCheck();
 
-        console.log(
-          `[ProviderManager] ${provider.id} healthy =`,
-          healthy
+        logger.debug(
+          "ProviderManager",
+          `Health check for '${provider.id}'`,
+          { healthy }
         );
 
         if (healthy) {
-          console.log(
-            "[ProviderManager] Selected:",
-            provider.id
+          logger.info(
+            "ProviderManager",
+            `Selected provider '${provider.id}' for '${capability}'`
           );
+
           return provider;
         }
-      } catch (err: any) {
-        console.error(
-          `[ProviderManager] ${provider.id} failed:`,
-          err?.message ?? err
+      } catch (error) {
+        logger.error(
+          "ProviderManager",
+          `Provider '${provider.id}' failed health check`,
+          error instanceof Error ? error.message : error
         );
       }
     }
@@ -63,7 +70,6 @@ class ProviderManager {
     return this.getProvider(capability);
   }
 
-
   async execute<T>(
     capability: ProviderCapability,
     operation: (provider: NebulaProvider) => Promise<T>
@@ -74,7 +80,6 @@ class ProviderManager {
 
     for (const provider of providers) {
       try {
-
         if (provider.id === "moviebox") {
           void clusterManager.ensureMovieBoxAwake();
         }
@@ -82,22 +87,29 @@ class ProviderManager {
         const healthy = await provider.healthCheck();
 
         if (!healthy) {
+          logger.warn(
+            "ProviderManager",
+            `Skipping unhealthy provider '${provider.id}'`
+          );
           continue;
         }
 
         const result = await operation(provider);
 
-        return {
-          provider,
-          result
-        };
-      } catch (error) {
-        console.error(
-          `[ProviderManager] ${provider.id} operation failed:`,
-          error instanceof Error ? error.message : error
+        logger.info(
+          "ProviderManager",
+          `Operation completed using '${provider.id}'`
         );
 
+        return { provider, result };
+      } catch (error) {
         lastError = error;
+
+        logger.error(
+          "ProviderManager",
+          `Operation failed for '${provider.id}'`,
+          error instanceof Error ? error.message : error
+        );
       }
     }
 
@@ -105,7 +117,6 @@ class ProviderManager {
       ? lastError
       : new Error(`No provider available for ${capability}`);
   }
-
 
   async getDefaultProvider() {
     return this.getProvider(ProviderCapability.HOME);
