@@ -94,6 +94,18 @@ async def details(subject_id: str):
         )
         content = await api.get_content_model(subject_id)
 
+        from pprint import pprint
+
+        print("\n========== RESOURCE DETECTORS ==========")
+
+        for i, detector in enumerate(getattr(content, "resource_detectors", [])):
+            print(f"\n===== DETECTOR {i} =====")
+            print("codec:", getattr(detector, "codec_name", None))
+
+            for res in getattr(detector, "resolution_list", []):
+                pprint(vars(res))
+
+
         print("========== RAW ITEM ==========")
         from pprint import pprint
 
