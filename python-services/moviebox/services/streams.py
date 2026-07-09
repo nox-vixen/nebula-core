@@ -7,8 +7,9 @@ Android API (v3)
 ==========================================================
 """
 
-from moviebox_api.v3.constants import CustomResolutionType
+from pprint import pprint
 
+from moviebox_api.v3.constants import CustomResolutionType
 from ..provider_v3 import (
     MovieBoxHttpClient,
     DownloadableVideoFilesDetail,
@@ -24,11 +25,12 @@ async def movie_streams(subject_id: str):
 
         try:
             data = await downloads.get_content_model(subject_id)
-        print("\n===== RAW DOWNLOADABLE FILES =====")
-        from pprint import pprint
-        for i, f in enumerate(data.list):
-            print(f"\n---- Stream {i} ----")
-            pprint(f.__dict__)
+
+            print("\n===== RAW DOWNLOADABLE FILES =====")
+            for i, f in enumerate(data.list):
+                print(f"\n---- Stream {i} ----")
+                pprint(f.__dict__)
+
         except Exception as e:
             return {
                 "success": False,
@@ -64,20 +66,16 @@ async def movie_streams(subject_id: str):
             for f in data.list
         ]
 
-    best = max(streams, key=lambda s: s["quality"]) if streams else None
+        best = max(streams, key=lambda s: s["quality"]) if streams else None
 
-    return {
-        "id": subject_id,
-        "streams": streams,
-        "best": best,
-    }
+        return {
+            "id": subject_id,
+            "streams": streams,
+            "best": best,
+        }
 
 
-async def episode_streams(
-    subject_id: str,
-    season: int,
-    episode: int,
-):
+async def episode_streams(subject_id: str, season: int, episode: int):
     async with MovieBoxHttpClient() as client:
         downloads = DownloadableVideoFilesDetail(
             client_session=client,
@@ -85,8 +83,8 @@ async def episode_streams(
         )
 
         data = await downloads.get_content_model(subject_id)
+
         print("\n===== RAW DOWNLOADABLE FILES =====")
-        from pprint import pprint
         for i, f in enumerate(data.list):
             print(f"\n---- Stream {i} ----")
             pprint(f.__dict__)
