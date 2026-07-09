@@ -102,41 +102,30 @@ async def _request(url, method="GET", payload=None):
 
 async def resolve_movie(subject_id: str, detail_path: str):
 
-    dom = await _request(f"{API_BASE}/media-player/get-domain")
+    await _guest_token()
 
-    domain = dom.get("data", "https://netfilm.world").rstrip("/")
-
-    referer = (
-        f"{domain}/spa/videoPlayPage/movies/"
-        f"{detail_path}"
-        f"?id={subject_id}"
-        f"&type=/movie/detail"
-        f"&detailSe=1"
-        f"&detailEp=1"
-        f"&lang=en"
-    )
-
-    play_url = (
-        f"{domain}/wefeed-h5api-bff/subject/play"
-        f"?subjectId={subject_id}"
-        f"&se=1"
-        f"&ep=1"
-        f"&detailPath={detail_path}"
-    )
+    play_url = f"{API_BASE.replace('/wefeed-h5api-bff','')}/wefeed-h5-bff/web/subject/play"
 
     async with httpx.AsyncClient(timeout=25, follow_redirects=True) as client:
 
         r = await client.get(
             play_url,
+            params={
+                "subjectId": subject_id,
+                "se": 0,
+                "ep": 0,
+            },
             headers={
-                **_PLAYER_HEADERS,
-                "Referer": referer,
+                **_DEFAULT_HEADERS,
+                "Referer": f"https://moviebox.ph/movies/{detail_path}",
             },
         )
 
-        print("PLAY STATUS:", r.status_code)
-        print("PLAY BODY:", r.text)
+        print("NEW PLAY STATUS:", r.status_code)
+        print("NEW PLAY BODY:", r.text)
 
-        data = r.json().get("data", {})
+        try:
+            return r.json().get("data", {})
+        except Exception:
+            return {}
 
-    return data
