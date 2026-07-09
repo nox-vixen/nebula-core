@@ -62,7 +62,12 @@ export function mapMovieBoxMovie(movie: any): NebulaMovie {
     language: undefined,
     adult: false,
     poster: movie.poster,
-    backdrop: undefined
+    backdrop:
+      movie.backdrop ??
+      movie.background ??
+      movie.banner ??
+      movie.cover ??
+      movie.poster
   };
 }
 
