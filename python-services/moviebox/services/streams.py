@@ -24,6 +24,11 @@ async def movie_streams(subject_id: str):
 
         try:
             data = await downloads.get_content_model(subject_id)
+        print("\n===== RAW DOWNLOADABLE FILES =====")
+        from pprint import pprint
+        for i, f in enumerate(data.list):
+            print(f"\n---- Stream {i} ----")
+            pprint(f.__dict__)
         except Exception as e:
             return {
                 "success": False,
@@ -80,6 +85,11 @@ async def episode_streams(
         )
 
         data = await downloads.get_content_model(subject_id)
+        print("\n===== RAW DOWNLOADABLE FILES =====")
+        from pprint import pprint
+        for i, f in enumerate(data.list):
+            print(f"\n---- Stream {i} ----")
+            pprint(f.__dict__)
 
         matches = [
             f
