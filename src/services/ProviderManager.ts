@@ -28,6 +28,10 @@ class ProviderManager {
       try {
         console.log("[ProviderManager] Checking:", provider.id);
 
+        if (provider.id === "moviebox") {
+          await clusterManager.ensureMovieBoxAwake();
+        }
+
         const healthy = await provider.healthCheck();
 
         console.log(
