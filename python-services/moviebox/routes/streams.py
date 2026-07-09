@@ -11,11 +11,11 @@ router = APIRouter(
 @router.get("/movie")
 async def movie(
     id: str,
-    ref: str = "",
+    providerRef: str = "",
 ):
     return await moviebox_service.movie_streams(
         id,
-        ref,
+        providerRef,
     )
 
 
