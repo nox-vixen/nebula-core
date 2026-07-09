@@ -19,7 +19,7 @@ class HomeService {
       ProviderCapability.HOME
     );
 
-    return cache.remember(
+    return cache.rememberStale(
       CacheKey.home(provider.id),
       CacheTTL.HOME,
       async () => ({

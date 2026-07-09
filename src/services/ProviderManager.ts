@@ -11,6 +11,7 @@ import {
   ProviderCapability,
   NebulaProvider
 } from "../providers";
+import { clusterManager } from "./ClusterManager";
 
 class ProviderManager {
 
@@ -69,6 +70,11 @@ class ProviderManager {
 
     for (const provider of providers) {
       try {
+
+        if (provider.id === "moviebox") {
+          void clusterManager.ensureMovieBoxAwake();
+        }
+
         const healthy = await provider.healthCheck();
 
         if (!healthy) {
