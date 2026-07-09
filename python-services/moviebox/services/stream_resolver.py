@@ -127,7 +127,8 @@ async def resolve_movie(subject_id: str, detail_path: str):
             },
         )
 
-        r.raise_for_status()
+        print("PLAY STATUS:", r.status_code)
+        print("PLAY BODY:", r.text)
 
         data = r.json().get("data", {})
 
