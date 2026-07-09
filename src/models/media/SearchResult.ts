@@ -12,6 +12,9 @@ export type NebulaContentType = "movie" | "tv";
 export interface NebulaSearchResult {
   id: string;
   provider: string;
+
+  /** Provider specific reference (slug/detailPath/etc.) */
+  providerRef?: string;
   type: NebulaContentType;
   title: string;
   overview?: string;

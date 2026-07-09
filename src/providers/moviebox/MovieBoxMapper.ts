@@ -27,10 +27,6 @@ export function mapMovieBoxSearchResult(item: any): NebulaSearchResult {
     id: String(item.id),
     provider: "moviebox",
     providerRef:
-      series.detailPath ??
-      series.slug ??
-      undefined,
-    providerRef:
       item.detailPath ??
       item.slug ??
       undefined,
