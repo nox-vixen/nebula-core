@@ -9,13 +9,13 @@ Phase 4.4
 from .stream_resolver import resolve_movie
 
 
-async def movie_streams(subject_id: str):
+async def movie_streams(subject_id: str, provider_ref: str | None = None):
     """
     Resolve movie streams using the new H5 resolver.
     Returns the same normalized structure expected by Nebula Core.
     """
 
-    data = await resolve_movie(subject_id, "")
+    data = await resolve_movie(subject_id, provider_ref or "")
 
     files = (
         data.get("playList")
