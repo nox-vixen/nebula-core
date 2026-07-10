@@ -21,6 +21,7 @@ import {
   NebulaTVShow
 } from "../../models";
 
+import { movieBoxAdapter } from "./MovieBoxAdapter";
 import { movieBoxClient } from "./MovieBoxClient";
 
 import {
@@ -111,38 +112,16 @@ class MovieBoxProvider implements NebulaProvider {
     id: string,
     providerRef?: string
   ): Promise<NebulaStream> {
-    const response: any =
-      await movieBoxClient.getMovieStreams(
-        id,
-        providerRef
+
+    if (!providerRef) {
+      throw new Error(
+        "MovieBox playback requires providerRef (detailPath)."
       );
-
-    const streams =
-      response?.streams ??
-      response?.data ??
-      response;
-
-    if (!Array.isArray(streams) || streams.length === 0) {
-      throw new Error("No streams returned by MovieBox.");
     }
 
-    streams.sort(
-      (a: any, b: any) =>
-        (b.resolution ?? b.quality ?? 0) -
-        (a.resolution ?? a.quality ?? 0)
+    return movieBoxAdapter.getMovieStream(
+      providerRef
     );
-
-    const best = streams[0];
-
-    return {
-      id,
-      provider: "moviebox",
-      url: best.url,
-      quality: String(best.quality ?? best.resolution ?? ""),
-      format: best.format ?? "mp4",
-      size: best.size,
-      audio: best.audio
-    };
   }
 
   async getEpisodeStreams(
@@ -150,8 +129,14 @@ class MovieBoxProvider implements NebulaProvider {
     season: number,
     episode: number
   ): Promise<NebulaStream> {
-    return movieBoxClient.getEpisodeStreams(seriesId, season, episode);
+
+    return movieBoxAdapter.getEpisodeStream(
+      seriesId,
+      season,
+      episode
+    );
   }
+
 
   async getSubtitles(
     id: string,
